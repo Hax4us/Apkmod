@@ -5,7 +5,7 @@ red='\033[1;31m'
 yellow='\033[1;33m'
 reset='\033[0m'
 
-ALPINEDIR="${HOME}/TermuxAlpine"
+ALPINEDIR="${PREFIX}/share/TermuxAlpine"
 BINDIR="${PREFIX}/bin"
 
 setup_alpine() {
