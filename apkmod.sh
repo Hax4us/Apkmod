@@ -19,7 +19,7 @@ purple='\033[1;35m'
 reset='\033[0m'
 
 usage() {
-	printf "${yellow}Usage: apkmod [option] [/path/to/input.apk] [/path/to/output.apk]\n${purple}valid options are:${blue}\n  -v		print version\n  -d		For decompiling\n  -r		For recompiling\n  -s		For signing\n  -b		For binding payload\n${yellow}Example:\n  ${blue}apkmod -b /sdcard/apps/play.apk /sdcard/apps/binded_play.apk  ${purple}bind the payload with play.apk and saves output in given directory.\n${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
+	printf "${yellow}Usage: apkmod [option] [EXTRAARGS] [/path/to/input.apk] [/path/to/output.apk]\n${purple}valid options are:${blue}\n  -v		print version\n  -d		For decompiling\n  -r		For recompiling\n  -s		For signing\n  -b		For binding payload\n${yellow}Example:\n  ${blue}apkmod -b 127.0.0.1 4444 /sdcard/apps/play.apk /sdcard/apps/binded_play.apk  ${purple}bind the payload with play.apk and saves output in given directory.\n${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
 }
 
 error_msg() {
@@ -46,7 +46,7 @@ dir_exist() {
 
 decompile() {
 	print_status "Decompiling ${1}"
-	apktool d ${1} -o ${2}
+	apktool d -f ${1} -o ${2}
 	print_status "Decompiled into ${2}"
 }
 
@@ -101,22 +101,31 @@ validate_input() {
 
 if [ "${1}" = "-h" -o "${1}" = "" ]; then
 	usage
+	exit 1
 elif [ "${1}" = "-v" ]; then
 	printf "${yellow}${VERSION}\n${reset}"
-elif [ "${1}" = "-d" ]; then
-	validate_input -d ${2} ${3}
-	decompile ${2} ${3}
+fi
+
+if [ "${1}" = "-d" -o "${1}" = "-r" -o "${1}" = "-s" ]; then
+	in_abs_path=$(readlink -f ${2})
+	out_abs_path=$(readlink -f ${3})
+fi
+
+if [ "${1}" = "-d" ]; then
+	validate_input -d ${in_abs_path} ${out_abs_path}
+	decompile ${in_abs_path} ${out_abs_path}
 elif [ "${1}" = "-r" ]; then
-	validate_input -r ${2} ${3}
+	validate_input -r ${in_abs_path} ${out_abs_path}
 	recompile ${2} ${3}
 elif [ "${1}" = "-s" ]; then
-	validate_input -s ${2} ${3}
+	validate_input -s ${in_abs_path} ${out_abs_path}
 	signapk ${2} ${3}
 elif [ "${1}" = "-b" ]; then
-	validate_input -b ${2} ${3} ${4} ${5}
-	bindapk ${2} ${3} ${4} ${5}
+	in_abs_path=$(readlink -f ${4})
+	out_abs_path=$(readlink -f ${5})
+	validate_input -b ${2} ${3} ${in_abs_path} ${out_abs_path}
+	bindapk ${2} ${3} ${in_abs_path} ${out_abs_path}
 else
-	error_msg "Invalid option"
-	exit 1
+	error_msg "Invalid input"
 fi
 
