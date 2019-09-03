@@ -64,7 +64,7 @@ install_deps() {
 	chmod +x ${BINDIR}/apkmod
 }
 
-install_scipts() {
+install_scripts() {
 	for script in apktool_termux.sh apktool_alpine.sh apk.rb; do
 		wget https://github.com/hax4us/Apkmod/raw/master/scripts/${script}
 	done
@@ -77,6 +77,8 @@ install_scipts() {
 	fi
 }
 
+termux-wake-lock
 setup_alpine
 install_deps
 install_scripts
+termux-wake-unlock
