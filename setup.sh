@@ -71,7 +71,9 @@ install_scripts() {
 	mv apktool_termux.sh ${BINDIR}/apktool && chmod +x ${BINDIR}/apktool
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
 	if [ -d ${HOME}/metasploit-framework ]; then
-		mv apk.rb $HOME/metasploit-framework/lib/msf/core/payload/
+		mv apk.rb ${HOME}/metasploit-framework/lib/msf/core/payload/
+	elif [ -d ${PREFIX}/opt/metasploit-framework ]; then
+		mv apk.rb ${PREFIX}/opt/metasploit-framework/lib/msf/core/payload/
 	else
 		printf "${red}[!] Metasploit is not installed${reset}"
 	fi
