@@ -116,7 +116,7 @@ if [ "${1}" = "-d" ]; then
 	decompile ${in_abs_path} ${out_abs_path}
 elif [ "${1}" = "-r" ]; then
 	validate_input -r ${in_abs_path} ${out_abs_path}
-	recompile ${2} ${3}
+	recompile ${in_abs_path} ${out_abs_path}
 elif [ "${1}" = "-s" ]; then
 	validate_input -s ${in_abs_path} ${out_abs_path}
 	signapk ${2} ${3}
