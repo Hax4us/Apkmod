@@ -140,7 +140,7 @@ elif [ "${1}" = "-v" ]; then
 elif [ "${1}" = "-u" ]; then
 	print_status "Updating ..."
 	update ${1}
-	print_status "Update complted"
+	print_status "Update completed"
 	exit
 fi
 
