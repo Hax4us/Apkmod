@@ -5,6 +5,7 @@
 ## [1.2]
 ### Added
 - extra flag or option `-a` to use __aapt2__ instead of __aapt__.
+- Issue template
 ### Changed
 - use getopts for parameters handling
 ### Fixed
