@@ -154,25 +154,21 @@ fi
 while getopts ":d:r:s:b:o:hv" opt; do
     case $opt in
         d)
-            echo "-d triggered with $OPTARG"
             ACTION="decompile"
             ARG="-d"
             in_abs_path=$(readlink -f ${OPTARG})
             ;;
         r)
-            echo "-r triggered with $OPTARG"
             ACTION="recompile"
             ARG="-r"
             in_abs_path=$(readlink -f ${OPTARG})
             ;;
         s)
-            echo "-s triggered with $OPTARG"
             ACTION="signapk"
             ARG="-s"
             in_abs_path=$(readlink -f ${OPTARG})
             ;;
         b)
-            echo "-b triggered with $OPTARG"
             ACTION="bindapk"
             ARG="-b"
             in_abs_path=$(readlink -f ${OPTARG})
@@ -180,7 +176,6 @@ while getopts ":d:r:s:b:o:hv" opt; do
             LPORT=$(echo "$@" | sed -e "s/ /\\n/g" | grep -i LPORT | cut -d "=" -f2)
             ;;
         o)
-            echo "-o with $OPTARG"
             out_abs_path=$(readlink -f ${OPTARG})
             ;;
         a)
