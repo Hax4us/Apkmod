@@ -17,6 +17,7 @@ A clear and concise description of what you expected to happen.
 
 **Additional information**
 Post output of command `termux-info`.
+Attach Original __Apk__ file.
 
 Depending on problem, additional information may be requested:
 
