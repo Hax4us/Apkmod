@@ -1,4 +1,4 @@
-# Apkmod v1.0
+# Apkmod v1.2
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
