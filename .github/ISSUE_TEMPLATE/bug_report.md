@@ -16,10 +16,6 @@ Steps to reproduce the behavior. Please post all necessary commands that are nee
 A clear and concise description of what you expected to happen.
 
 **Additional information**
-Post output of command `termux-info` and `apkmod -v`
-Attach Original __Apk__ file.
-
-
-Depending on problem, additional information may be requested:
-
-1. Android warning/error log: `logcat -d "*:W"`.
+1. Post output of command `termux-info`
+2. Post vereion `apkmod -v`
+3. Attach Original __Apk__ file.
