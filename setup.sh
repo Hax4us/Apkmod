@@ -89,19 +89,25 @@ install_scripts() {
 do_patches() {
     if [ "${metasploit}" = "noinbuilt" ]; then
         VERSION=$(grep VERSION ~/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
-        cd ~/metasploit-framework/lib/metasploit/framework
+        cd ~/metasploit-framework
+        strip_slashes="-p7"
     elif [ "${metasploit}" = "inbuilt" ]
         VERSION=$(grep VERSION ${PREFIX}/opt/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
         cd ${PREFIX}/opt/metasploit-framework
+        strip_slashes="-p8"
     else
         printf "${red}[!] metasploit version can't be determined${reset}"
         exit 1
     fi
     for patch in msfvenom.patch payload_generator.rb.patch; do
         wget https://github.com/hax4us/Apkmod/raw/master/patches/msf-${VERSION}/${patch}
-        patch -i ${patch}
     done
-
+    patch -N --dry-run -i msfvenom.patch > /dev/null
+    patch -N --dry-run ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+    if [ $? -eq 0 ]; then
+        patch -i msfvenom.patch > /dev/null
+        patch ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+    fi
 }
 
 termux-wake-lock
