@@ -2,4 +2,4 @@
 unset LD_PRELOAD
 args="$@"
 comnd="apktool $args"
-exec proot --link2symlink -0 -r ${PREFIX}/share/TermuxAlpine/ -b /dev/ -b /sys/ -b /proc/ -b /sdcard -b /storage -b ${HOME} -b ${PREFIX} -w $HOME /usr/bin/env HOME=/root TERM="$TERM" LANG=$LANG PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/sh --login -c "$comnd"
+exec proot --link2symlink -0 -r ${PREFIX}/share/TermuxAlpine/ -b /dev/ -b /sys/ -b /proc/ -b /sdcard -b /storage -b ${HOME} -b ${PREFIX}/share -w $HOME /usr/bin/env HOME=/root PREFIX=/usr SHELL=/bin/sh TERM="$TERM" LANG=$LANG PATH=/bin:/usr/bin:/sbin:/usr/sbin LD_LIBRARY_PATH=/usr/lib /bin/sh --login -c "$comnd"
