@@ -143,10 +143,10 @@ update() {
 	temp=$(curl -L -s https://github.com/Hax4us/Apkmod/raw/master/apkmod.sh | grep -w "VERSION=" | head -n1)
 	N_VERSION=$(echo ${temp} | sed -e 's/[^0-9]\+[^0-9]/ /g' | cut -d '"' -f1)
 	if [ "${1}" != "-u" ]; then
-		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
+		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update"
 	fi
 	if [ "${1}" = "-u" ]; then
-		cd && wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
+		cd && rm setup.sh && wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
 	fi
 }
 
@@ -156,8 +156,9 @@ update() {
 
 # check for update only if net is ON
 wget -q --spider http://google.com
-if [ $? -eq 0 ]; then
+if [ $? -eq 0 -a ! "${1}" = "-u" ]; then
     update
+    exit 1
 fi
 
 if [ $# -eq 0 ]; then
@@ -205,7 +206,7 @@ while getopts ":d:r:s:b:o:ahvu" opt; do
             ;;
         u)
             print_status "Updating ..."
-            update ${opt}
+            update "-${opt}"
             print_status "Update completed"
             exit 0
             ;;

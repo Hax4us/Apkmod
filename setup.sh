@@ -91,7 +91,7 @@ do_patches() {
         VERSION=$(grep VERSION ~/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
         cd ~/metasploit-framework
         strip_slashes="-p7"
-    elif [ "${metasploit}" = "inbuilt" ]
+    elif [ "${metasploit}" = "inbuilt" ]; then
         VERSION=$(grep VERSION ${PREFIX}/opt/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
         cd ${PREFIX}/opt/metasploit-framework
         strip_slashes="-p8"
