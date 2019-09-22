@@ -1,0 +1,13 @@
+--- msfvenom.bak	2019-09-21 15:36:35.980071664 +0530
++++ msfvenom	2019-09-21 16:46:28.695072753 +0530
+@@ -175,6 +175,10 @@
+     opts[:timeout] = x
+   end
+ 
++  opt.on('--use-aapt2','Use aapt2 for recompiling') do
++    opts[:use_aapt2] = true
++  end
++
+   opt.on_tail('-h', '--help', 'Show this message') do
+     raise HelpError, "#{opt}"
+   end
