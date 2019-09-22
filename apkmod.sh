@@ -146,7 +146,11 @@ update() {
 		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update"
 	fi
 	if [ "${1}" = "-u" ]; then
-		cd && rm setup.sh && wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
+        cd
+        if [ -e setup.sh ]; then
+            rm setup.sh
+        fi
+		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
 	fi
 }
 
