@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.2"
+VERSION="1.3"
 
 #colors
 cyan='\033[1;36m'                       
@@ -165,7 +165,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":d:r:s:b:o:ahv" opt; do
+while getopts ":d:r:s:b:o:ahvu" opt; do
     case $opt in
         d)
             ACTION="decompile"
