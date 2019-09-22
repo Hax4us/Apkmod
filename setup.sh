@@ -75,16 +75,44 @@ install_scripts() {
 	mv apktool_termux.sh ${BINDIR}/apktool && chmod +x ${BINDIR}/apktool
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
 	if [ -d ${HOME}/metasploit-framework ]; then
+        metasploit="noinbuilt"
 		mv apk.rb ${HOME}/metasploit-framework/lib/msf/core/payload/
 	elif [ -d ${PREFIX}/opt/metasploit-framework ]; then
+        metasploit="inbuilt"
 		mv apk.rb ${PREFIX}/opt/metasploit-framework/lib/msf/core/payload/
 	else
 		printf "${red}[!] Metasploit is not installed${reset}"
+        exit 1
 	fi
+}
+
+do_patches() {
+    if [ "${metasploit}" = "noinbuilt" ]; then
+        VERSION=$(grep VERSION ~/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
+        cd ~/metasploit-framework
+        strip_slashes="-p7"
+    elif [ "${metasploit}" = "inbuilt" ]
+        VERSION=$(grep VERSION ${PREFIX}/opt/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
+        cd ${PREFIX}/opt/metasploit-framework
+        strip_slashes="-p8"
+    else
+        printf "${red}[!] metasploit version can't be determined${reset}"
+        exit 1
+    fi
+    for patch in msfvenom.patch payload_generator.rb.patch; do
+        wget https://github.com/hax4us/Apkmod/raw/master/patches/msf-${VERSION}/${patch}
+    done
+    patch -N --dry-run -i msfvenom.patch > /dev/null
+    patch -N --dry-run ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+    if [ $? -eq 0 ]; then
+        patch -i msfvenom.patch > /dev/null
+        patch ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+    fi
 }
 
 termux-wake-lock
 setup_alpine
 install_deps
 install_scripts
+do_patches
 termux-wake-unlock
