@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.3"
+VERSION="1.4"
 
 #colors
 cyan='\033[1;36m'                       
@@ -143,7 +143,7 @@ update() {
 	temp=$(curl -L -s https://github.com/Hax4us/Apkmod/raw/master/apkmod.sh | grep -w "VERSION=" | head -n1)
 	N_VERSION=$(echo ${temp} | sed -e 's/[^0-9]\+[^0-9]/ /g' | cut -d '"' -f1)
 	if [ "${1}" != "-u" ]; then
-		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update"
+		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
 	fi
 	if [ "${1}" = "-u" ]; then
         cd
@@ -162,7 +162,6 @@ update() {
 wget -q --spider http://google.com
 if [ $? -eq 0 -a ! "${1}" = "-u" ]; then
     update
-    exit 1
 fi
 
 if [ $# -eq 0 ]; then
