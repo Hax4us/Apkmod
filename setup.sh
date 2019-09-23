@@ -102,9 +102,11 @@ do_patches() {
     done
     strip_slashes="-p8"
     patch -N --dry-run -i msfvenom.patch > /dev/null
-    patch -N --dry-run ${strip_slashes} -i payload_generator.rb.patch > /dev/null
     if [ $? -eq 0 ]; then
         patch -i msfvenom.patch > /dev/null
+    fi
+    patch -N --dry-run ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+    if [ $? -eq 0 ]; then
         patch ${strip_slashes} -i payload_generator.rb.patch > /dev/null
     fi
 }
