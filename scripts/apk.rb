@@ -189,7 +189,7 @@ class Msf::Payload::Apk
     #-alias #{keyalias} -storepass #{storepass} -keypass #{keypass} -keyalg RSA \
     #-keysize 2048 -startdate '#{orig_cert_startdate}' \
     #-validity #{orig_cert_validity} -dname '#{orig_cert_dname}'")
-    #run_cmd("rm -rf #{tempdir}/*")
+    run_cmd("rm -rf #{tempdir}/*")
 
     File.open("#{tempdir}/payload.apk", "wb") {|file| file.puts raw_payload }
     FileUtils.cp apkfile, "#{tempdir}/original.apk"
@@ -282,7 +282,7 @@ class Msf::Payload::Apk
     #run_cmd("zipalign 4 #{injected_apk} #{aligned_apk}")
 
     outputapk = File.read(signed_apk)
-    #run_cmd("rm -rf #{tempdir}/*")
+    run_cmd("rm -rf #{tempdir}/*")
 
     #FileUtils.remove_entry tempdir
     outputapk
