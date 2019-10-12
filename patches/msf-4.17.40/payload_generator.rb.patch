@@ -1,5 +1,5 @@
---- /data/data/com.termux/files/home/tmp/metasploit-framework-4.17.40/lib/msf/core/payload_generator.rb	2019-02-07 21:20:09.000000000 +0530
-+++ lib/msf/core/payload_generator.rb	2019-09-21 10:46:20.575999640 +0530
+--- lib/msf/core/payload_generator.rb.bak	2019-10-11 18:27:52.540999836 +0530
++++ lib/msf/core/payload_generator.rb	2019-10-11 18:36:10.565999890 +0530
 @@ -32,6 +32,9 @@
      # @!attribute  arch
      #   @return [String] The CPU architecture to build the payload for
