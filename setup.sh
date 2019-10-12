@@ -98,16 +98,16 @@ do_patches() {
         exit 1
     fi
     for patch in msfvenom.patch payload_generator.rb.patch; do
+        rm -f ${patch}
         wget https://github.com/hax4us/Apkmod/raw/master/patches/msf-${VERSION}/${patch}
     done
-    strip_slashes="-p8"
     patch -N --dry-run -i msfvenom.patch > /dev/null
     if [ $? -eq 0 ]; then
         patch -i msfvenom.patch > /dev/null
     fi
-    patch -N --dry-run ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+    patch -N --dry-run -i payload_generator.rb.patch > /dev/null
     if [ $? -eq 0 ]; then
-        patch ${strip_slashes} -i payload_generator.rb.patch > /dev/null
+        patch -i payload_generator.rb.patch > /dev/null
     fi
 }
 
