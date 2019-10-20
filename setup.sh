@@ -7,6 +7,7 @@ reset='\033[0m'
 
 ALPINEDIR="${PREFIX}/share/TermuxAlpine"
 BINDIR="${PREFIX}/bin"
+LIBDIR="${ALPINEDIR}/usr/lib"
 
 setup_alpine() {
 	noinstall="no"
@@ -28,12 +29,12 @@ setup_alpine() {
 	fi
 	mkdir ${ALPINEDIR}/root/.bind
 	cat <<EOF | startalpine
-	apk add openjdk8-jre
+	apk add openjdk8-jre libbsd zlib expat libpng
 EOF
 }
 
 install_deps() {
-	for pkg in apksigner wget bc sed; do
+	for pkg in apksigner wget bc; do
 		if [ ! -f ${BINDIR}/${pkg} ]; then
 			apt install ${pkg} -y
 		fi
@@ -45,21 +46,20 @@ install_deps() {
 		arm|armv7l)
 			ARCH=arm
 			;;
-		x86)
+		x86|i686)
 			ARCH=x86
 			;;
 		x86_64)
 			ARCH=x86_64
 			;;
 		*)
-			printf "your device is not supported yet"
+            printf "your device $(uname -m) is not supported yet"
 			exit 1
 			;;
 	esac
-	aapturl=https://github.com/hax4us/Apkmod/raw/master/aapt/${ARCH}/aapt
-    aapt2url=https://github.com/hax4us/Apkmod/raw/master/aapt2/${ARCH}/aapt2
-	wget ${aapturl} -O ${ALPINEDIR}/usr/bin/aapt
-    wget ${aapt2url} -O ${ALPINEDIR}/usr/bin/aapt2
+	aapturl=https://github.com/hax4us/Apkmod/raw/master/aapt/${ARCH}/aapt.tar.gz
+	wget ${aapturl} && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
+    mv ${LIBDIR}/android/aapt{,2} ${ALPINEDIR}/usr/bin
 	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
@@ -93,7 +93,8 @@ do_patches() {
     elif [ "${metasploit}" = "inbuilt" ]; then
         VERSION=$(grep VERSION ${PREFIX}/opt/metasploit-framework/lib/metasploit/framework/version.rb | head -n1 | sed -e 's/ /\n/g' | grep -E "[0-9]" | sed -e 's/"//g')
         cd ${PREFIX}/opt/metasploit-framework
-    else
+    fi
+    if [ -z "$VERSION" ]; then
         printf "${red}[!] metasploit version can't be determined${reset}"
         exit 1
     fi
