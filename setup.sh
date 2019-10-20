@@ -19,7 +19,7 @@ setup_alpine() {
 		elif [ "${choice}" = "n" ]; then
 			noinstall="yes"
 		else
-			printf "${red}[!] Wrong input${reset}"
+			printf "${red}[!] Wrong input${reset}\n"
 			exit 1
 		fi
 	fi
@@ -59,7 +59,9 @@ install_deps() {
 	esac
 	aapturl=https://github.com/hax4us/Apkmod/raw/master/aapt/${ARCH}/aapt.tar.gz
 	wget ${aapturl} && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
-    mv ${LIBDIR}/android/aapt{,2} ${ALPINEDIR}/usr/bin
+    for i in aapt aapt2; do
+        mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
+    done
 	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
@@ -104,11 +106,11 @@ do_patches() {
     done
     patch -N --dry-run -i msfvenom.patch > /dev/null
     if [ $? -eq 0 ]; then
-        patch -i msfvenom.patch > /dev/null
+        patch -i msfvenom.patch
     fi
     patch -N --dry-run -i payload_generator.rb.patch > /dev/null
     if [ $? -eq 0 ]; then
-        patch -i payload_generator.rb.patch > /dev/null
+        patch -i payload_generator.rb.patch
     fi
 }
 
