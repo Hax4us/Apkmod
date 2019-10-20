@@ -274,9 +274,9 @@ class Msf::Payload::Apk
     print_status "Rebuilding #{apkfile} with meterpreter injection as #{injected_apk}\n"
 
     # Temporary fix for invalid file names prefixed with $
-    run_cmd("find #{tempdir}/original -name \"*.xml\" -exec sed -i '/\"\\$/d' {} \\;")
-    run_cmd("find #{tempdir}/original -name \"*.xml\" -exec sed -i '/\\/\\$/d' {} \\;")
-    run_cmd("find #{tempdir}/original -name \"\\$*\" -delete")
+    #run_cmd("find #{tempdir}/original -name \"*.xml\" -exec sed -i '/\"\\$/d' {} \\;")
+    #run_cmd("find #{tempdir}/original -name \"*.xml\" -exec sed -i '/\\/\\$/d' {} \\;")
+    #run_cmd("find #{tempdir}/original -name \"\\$*\" -delete")
 
     apktool_output = run_cmd("apktool b #{aapt} -o #{tempdir}/output.apk #{tempdir}/original")
     unless File.readable?(injected_apk)
