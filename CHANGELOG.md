@@ -16,3 +16,9 @@
 - add aapt2 to bind()
 ### Fixed
 - set `LD_LIBRARY_PATH` to avoid libraries access from termux i.e `$PREFIX/lib`
+
+## [1.4]
+### Added
+- patched binaries of aapt2 to skip invalid names while recompiling
+### Fixed
+- fixes #10
