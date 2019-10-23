@@ -108,7 +108,7 @@ do_patches() {
     if [ $? -eq 0 ]; then
         patch -i msfvenom.patch
     fi
-    patch -N --dry-run -i payload_generator.rb.patch > /dev/null
+    patch -p0 -N --dry-run -i payload_generator.rb.patch > /dev/null
     if [ $? -eq 0 ]; then
         patch -p0 -i payload_generator.rb.patch
     fi
