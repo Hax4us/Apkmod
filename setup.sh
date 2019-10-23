@@ -29,7 +29,7 @@ setup_alpine() {
 	fi
 	mkdir ${ALPINEDIR}/root/.bind
 	cat <<EOF | startalpine
-	apk add openjdk8-jre libbsd zlib expat libpng
+	apk add openjdk8-jre libbsd zlib expat libpng protobuf
 EOF
 }
 
@@ -110,7 +110,7 @@ do_patches() {
     fi
     patch -N --dry-run -i payload_generator.rb.patch > /dev/null
     if [ $? -eq 0 ]; then
-        patch -i payload_generator.rb.patch
+        patch -p0 -i payload_generator.rb.patch
     fi
 }
 
