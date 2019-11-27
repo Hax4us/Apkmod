@@ -68,6 +68,7 @@ install_deps() {
 	chmod +x ${BINDIR}/apkmod
     chmod +x ${ALPINEDIR}/usr/bin/aapt
     chmod +x ${ALPINEDIR}/usr/bin/aapt2
+    mkdir -p ~/.apkmod
 }
 
 install_scripts() {
