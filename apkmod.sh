@@ -81,7 +81,7 @@ recompile() {
 
 signapk() {
 	print_status "Signing ${1}"
-	apksigner -p android keystore ${1} ${2}
+	apksigner -p android ~/.apkmod/keystore ${1} ${2}
     if [ ! -e ${2} ]; then
         error_msg "Can't sign, take screenshot and open a issue on github"
         exit 1
