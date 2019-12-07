@@ -68,7 +68,7 @@ install_deps() {
 	chmod +x ${BINDIR}/apkmod
     chmod +x ${ALPINEDIR}/usr/bin/aapt
     chmod +x ${ALPINEDIR}/usr/bin/aapt2
-    mkdir -p ~/.apkmod
+    rm -rf ~/.apkmod && mkdir -p ~/.apkmod
 }
 
 install_scripts() {
@@ -99,7 +99,7 @@ do_patches() {
             cp ${i} ${i}.orig
         fi
     done
-    busybox grep "#patched" msfvenom
+    busybox grep "#patched" msfvenom > /dev/null
     if [ $? -ne 0 ]; then
         line_num=$(busybox grep -n "help" msfvenom | cut -d ":" -f1)
         line_num=$((${line_num}-1))
@@ -111,13 +111,20 @@ do_patches() {
             exit 1
         fi
     fi
-    busybox grep "#patched" lib/msf/core/payload_generator.rb
+    busybox grep "#patched" lib/msf/core/payload_generator.rb > /dev/null
     if [ $? -ne 0 ]; then
         line_num=$(busybox grep -n ":add_code" lib/msf/core/payload_generator.rb | head -n1 | cut -d ":" -f1)
         line_num=$((${line_num}-2))
         busybox awk -v "n=${line_num}" -v "s=\t# @\!attribute  use_aapt2\n\t#   @return [String] use aapt2 or not\n\tattr_accessor :use_aapt2" '(NR==n) { print s } 1' lib/msf/core/payload_generator.rb.orig > lib/msf/core/payload_generator.rb
         if [ $? -ne 0 ]; then
             printf "${red}[!] can't patch payload_generator.rb\n${reset}"
+            exit 1
+        fi
+        line_num=$(busybox grep -n "@framework" lib/msf/core/payload_generator.rb | head -n1 | cut -d ":" -f1)
+        line_num=$((${line_num}-2))
+        busybox sed -i "${line_num}s/.*/\t@use_aapt2 = opts.fetch(:use_aapt2,false)/" lib/msf/core/payload_generator.rb
+        if [ $? -ne 0 ]; then
+            printf "${red}[!] can't patch payload_genereator.rb\n${reset}"
             exit 1
         fi
         line_num=$(busybox grep -n "apk_backdoor.backdoor_apk" lib/msf/core/payload_generator.rb | cut -d ":" -f1)
