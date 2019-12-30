@@ -24,7 +24,7 @@ setup_alpine() {
 		fi
 	fi
 	if [ "${noinstall}" = "no" ]; then
-		wget https://raw.githubusercontent.com/Hax4us/TermuxAlpine/master/TermuxAlpine.sh -O TermuxAlpine.sh
+		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/scripts/TermuxAlpine.sh -O TermuxAlpine.sh
 		bash TermuxAlpine.sh
 	fi
 	mkdir ${ALPINEDIR}/root/.bind
