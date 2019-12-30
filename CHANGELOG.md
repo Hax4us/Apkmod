@@ -22,3 +22,7 @@
 - patched binaries of aapt2 to skip invalid names while recompiling
 ### Fixed
 - fixes #10
+
+## [1.5]
+### Changed
+- stick to alpine v3.10.2 instead of latest one
