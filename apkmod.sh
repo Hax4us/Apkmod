@@ -181,7 +181,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":d:r:s:b:o:ahvu" opt; do
+while getopts ":d:r:s:b:o:ahvuV" opt; do
     case $opt in
         d)
             ACTION="decompile"
