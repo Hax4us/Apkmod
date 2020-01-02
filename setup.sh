@@ -28,6 +28,7 @@ setup_alpine() {
 		bash TermuxAlpine.sh
 	fi
 	mkdir ${ALPINEDIR}/root/.bind
+    mkdir ${ALPINEDIR}/home/.framework
 	cat <<EOF | startalpine
 	apk add openjdk8-jre libbsd zlib expat libpng protobuf
 EOF
@@ -62,7 +63,7 @@ install_deps() {
     for i in aapt aapt2; do
         mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
     done
-	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.0.jar
+	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.1.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
 	chmod +x ${BINDIR}/apkmod

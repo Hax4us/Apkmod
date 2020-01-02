@@ -26,3 +26,11 @@
 ## [1.5]
 ### Changed
 - stick to alpine v3.10.2 instead of latest one
+
+## [1.6]
+### Added
+- custom path of framework directory
+- new flag `-V` to enable verbose mode for decompiling & recompiling only
+### Changed
+- update apktool to 2.4.1 
+- remove framework app __1.apk__ after each decompiling

