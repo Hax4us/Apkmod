@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.5"
+VERSION="1.6"
 
 #colors
 cyan='\033[1;36m'                       
@@ -28,6 +28,7 @@ usage() {
     -b              For binding payload
     -o              Specify output file or directory
     -a              Use aapt2
+    -V              verbose output
     ${yellow}Example:
     ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444  ${purple}bind the payload with play.apk and saves output in given directory.
     ${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
@@ -56,8 +57,13 @@ dir_exist() {
 }
 
 decompile() {
+    local vbs_arg=""
 	print_status "Decompiling ${1}"
-	apktool d -f ${1} -o ${2}
+    if [ "${VERBOSE}" = "yes" ]; then
+        vbs_arg="-v"
+    fi
+	apktool ${vbs_arg} d -f ${1} -o ${2} -p /home/.framework
+    rm -f $PREFIX/share/TermuxAlpine/home/.framework/1.apk
     if [ ! -e ${2} ]; then
         error_msg "Can't decompile, take screenshot and open a issue on github"
         exit 1
@@ -66,12 +72,18 @@ decompile() {
 }
 
 recompile() {
+    local AAPT=""
+    local vbs_arg=""
 	print_status "Recompiling ${1}"
     if [ "${USE_AAPT2}" = "yes" ]; then
-        apktool b -a /usr/bin/aapt2 -o ${2} ${1}
+        AAPT="/usr/bin/aapt2"
     else
-        apktool b -a /usr/bin/aapt -o ${2} ${1}
+        AAPT="/usr/bin/aapt"
     fi
+    if [ "${VERBOSE}" = "yes" ]; then
+        vbs_arg="-v"
+    fi
+    apktool ${vbs_arg} b -a ${AAPT} -o ${2} ${1}
     if [ ! -e ${2} ]; then
         error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
         exit 1
@@ -212,6 +224,9 @@ while getopts ":d:r:s:b:o:ahvu" opt; do
             update "-${opt}"
             print_status "Update completed"
             exit 0
+            ;;
+        V)
+            VERBOSE="yes"
             ;;
         \?)
             error_msg "Invalid option: -$OPTARG"
