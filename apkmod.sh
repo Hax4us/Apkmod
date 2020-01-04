@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.6"
+VERSION="1.7"
 
 #colors
 cyan='\033[1;36m'                       
@@ -62,7 +62,7 @@ decompile() {
     if [ "${VERBOSE}" = "yes" ]; then
         vbs_arg="-v"
     fi
-	apktool ${vbs_arg} d -f ${1} -o ${2} -p /home/.framework
+	apktool ${NO_RES} ${NO_SMALI}${vbs_arg} d -f ${1} -o ${2} -p /home/.framework
     rm -f $PREFIX/share/TermuxAlpine/home/.framework/1.apk
     if [ ! -e ${2} ]; then
         error_msg "Can't decompile, take screenshot and open a issue on github"
@@ -181,7 +181,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":d:r:s:b:o:ahvuV" opt; do
+while getopts ":d:r:s:b:o:ahvuV-:" opt; do
     case $opt in
         d)
             ACTION="decompile"
@@ -228,6 +228,16 @@ while getopts ":d:r:s:b:o:ahvuV" opt; do
         V)
             VERBOSE="yes"
             ;;
+        -)
+            case $OPTARG in
+                no-res)
+                    NO_RES="--no-res    "
+                    ;;
+                no-smali)
+                    NO_SMALI="--no-src"
+                    ;;
+            esac
+            ;;
         \?)
             error_msg "Invalid option: -$OPTARG"
             exit 1
@@ -251,4 +261,4 @@ elif [ "${ARG}" = "-b" ]; then
 fi
 
 ## Lhost or lport will be ignored for all actions except bindapk
-${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path}
+${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path} ${NO_RES} ${NO_SMALI}

@@ -34,3 +34,8 @@
 ### Changed
 - update apktool to 2.4.1 
 - remove framework app __1.apk__ after each decompiling
+
+## [1.7]
+### Added
+- new option `--no-res` to decompile app except resources.
+- new option `--no-smali` to prevent disassembly of the dex file(s)
