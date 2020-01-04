@@ -1,4 +1,4 @@
-# Apkmod v1.6
+# Apkmod v1.7
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
@@ -13,7 +13,9 @@
 3. For signing `apkmod -s /path/to/unsignedapp.apk -o /path/to/signedapp.apk`. It will sign __unsignedapp.apk__ and saves output ( signed app ) to __signedapp.apk__.
 4. For binding `apkmod -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444`. It will bind payload with __originalApp.apk__ and saves final binded app to __binded.apk__.
 5. Now you can use a optional option `-a` to use __aapt2__ for __binding__ and __recompiling__. Why aapt2 ? Because some apps can't recompile with __aapt__ but __aapt2__ can do it. But I can't drop __aapt__ support because some apps can't recompile with __aapt2__ so first recompile or bind without __aapt2__ ( `-a` ) then if you failed then try with __aapt2__. For example `apkmod -a -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444`.
-6. Use `-V` to enable verbose output 
+6. Use `-V` to enable verbose output
+7. If only editing Java (smali) then this is the recommended action for faster decompile & rebuild `--no-res`
+8. If you are only editing the resources. This is the recommended action for faster disassemble & assemble `--no-smali`
 
 ### Size Comparision
 Size  | Apkmod  | Third party tools
