@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.7"
+VERSION="1.8"
 
 #colors
 cyan='\033[1;36m'                       
@@ -24,11 +24,17 @@ usage() {
     -v              print version
     -d              For decompiling
     -r              For recompiling
+    -R              recompile + sign
     -s              For signing
     -b              For binding payload
     -o              Specify output file or directory
     -a              Use aapt2
     -V              verbose output
+    -z              for zipalign
+    --no-res        prevents decompiling of resources
+    --no-smali      prevents dessambly of dex files
+    --no-assets     prevents decoding of unknown assets file
+    --frame-path    The folder location where framework files should be stored/read from
     ${yellow}Example:
     ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444  ${purple}bind the payload with play.apk and saves output in given directory.
     ${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
@@ -62,7 +68,7 @@ decompile() {
     if [ "${VERBOSE}" = "yes" ]; then
         vbs_arg="-v"
     fi
-	apktool ${NO_RES} ${NO_SMALI}${vbs_arg} d -f ${1} -o ${2} -p /home/.framework
+	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d -f ${1} -o ${2} -p ${FRAMEPATH:-/home/.framework}
     rm -f $PREFIX/share/TermuxAlpine/home/.framework/1.apk
     if [ ! -e ${2} ]; then
         error_msg "Can't decompile, take screenshot and open a issue on github"
@@ -89,6 +95,9 @@ recompile() {
         exit 1
     fi
 	print_status "Recompiled to ${2}"
+    if [ "${IS_SIGN}" = "yes" ]; then
+        signapk ${2} ${2%.*}_signed.apk
+    fi
 }
 
 signapk() {
@@ -116,6 +125,17 @@ bindapk() {
 		exit 1
 	fi
 	print_status "Binded to ${4}"
+}
+
+zipAlign() {
+    print_status "Note : never use zipalign with signed APK"
+    print_status "aligning APK..."
+    zipalign -f 4 ${1} ${2}
+    if [ ! -e ${4} ]; then
+        error_msg "can't align APK"
+        exit 1
+    fi
+    print_status "aligned successfully"
 }
 
 #########################
@@ -181,7 +201,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":d:r:s:b:o:ahvuV-:" opt; do
+while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
     case $opt in
         d)
             ACTION="decompile"
@@ -236,7 +256,24 @@ while getopts ":d:r:s:b:o:ahvuV-:" opt; do
                 no-smali)
                     NO_SMALI="--no-src"
                     ;;
+                no-assets)
+                    NO_ASSETS="--no-assets"
+                    ;;
+                frame-path*)
+                    FRAMEPATH="${OPTARG#*=}"
+                    ;;
             esac
+            ;;
+        R)
+            ACTION="recompile"
+            ARG="-r"
+            in_abs_path=$(readlink -f ${OPTARG})
+            IS_SIGN="yes"
+            ;;
+        z)
+            ACTION="zipAlign"
+            ARG="-z"
+            in_abs_path=$(readlink -f ${OPTARG})
             ;;
         \?)
             error_msg "Invalid option: -$OPTARG"
@@ -258,7 +295,9 @@ elif [ "${ARG}" = "-s" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path}
 elif [ "${ARG}" = "-b" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path} ${LHOST} ${LPORT}
+elif [ "${ARG}" = "-z" ]; then
+    validate_input ${ARG} ${in_abs_path} ${out_abs_path}
 fi
 
 ## Lhost or lport will be ignored for all actions except bindapk
-${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path} ${NO_RES} ${NO_SMALI}
+${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path} ${NO_RES} ${NO_SMALI} ${NO_ASSETS}
