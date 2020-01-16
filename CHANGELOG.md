@@ -39,3 +39,10 @@
 ### Added
 - new option `--no-res` to decompile app except resources.
 - new option `--no-smali` to prevent disassembly of the dex file(s)
+
+## [1.8]
+### Added
+- new option `--no-assets` to prevent decoding of unknown assets files
+- `-z` for zipalign
+- `--frame-path` to specify framework directory
+- `-R` recompile + sign

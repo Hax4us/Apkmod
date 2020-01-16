@@ -1,4 +1,4 @@
-# Apkmod v1.7
+# Apkmod v1.8
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
@@ -16,6 +16,7 @@
 6. Use `-V` to enable verbose output
 7. If only editing Java (smali) then this is the recommended action for faster decompile & rebuild `--no-res`
 8. If you are only editing the resources. This is the recommended action for faster disassemble & assemble `--no-smali`
+9. use `--frame-path` to specify framework directory like `--frame-path=/path/to/dir` 
 
 ### Size Comparision
 Size  | Apkmod  | Third party tools
