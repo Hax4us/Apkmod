@@ -96,7 +96,7 @@ seturl() {
 #	fi
 	ALPINE_VER=3.10.2
 #	ALPINE_URL="http://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/$SETARCH/alpine-minirootfs-$ALPINE_VER-$SETARCH.tar.gz"
-	ALPINE_URL="http://dl-cdn.alpinelinux.org/alpine/v3.10/releases/${SETARCH}/alpine-minirootfs-${ALPINE_VER}-aarch64.tar.gz"
+	ALPINE_URL="http://dl-cdn.alpinelinux.org/alpine/v3.10/releases/${SETARCH}/alpine-minirootfs-${ALPINE_VER}-${SETARCH}.tar.gz"
 }
 
 # Utility function to get tar file
