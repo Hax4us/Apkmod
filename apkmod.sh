@@ -206,27 +206,27 @@ while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
         d)
             ACTION="decompile"
             ARG="-d"
-            in_abs_path=$(readlink -f ${OPTARG})
+            in_abs_path=$(readlink -m ${OPTARG})
             ;;
         r)
             ACTION="recompile"
             ARG="-r"
-            in_abs_path=$(readlink -f ${OPTARG})
+            in_abs_path=$(readlink -m ${OPTARG})
             ;;
         s)
             ACTION="signapk"
             ARG="-s"
-            in_abs_path=$(readlink -f ${OPTARG})
+            in_abs_path=$(readlink -m ${OPTARG})
             ;;
         b)
             ACTION="bindapk"
             ARG="-b"
-            in_abs_path=$(readlink -f ${OPTARG})
+            in_abs_path=$(readlink -m ${OPTARG})
             LHOST=$(echo "$@" | sed -e "s/ /\\n/g" | grep -i LHOST | cut -d "=" -f2)
             LPORT=$(echo "$@" | sed -e "s/ /\\n/g" | grep -i LPORT | cut -d "=" -f2)
             ;;
         o)
-            out_abs_path=$(readlink -f ${OPTARG})
+            out_abs_path=$(readlink -m ${OPTARG})
             ;;
         a)
             USE_AAPT2="yes"
@@ -267,13 +267,13 @@ while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
         R)
             ACTION="recompile"
             ARG="-r"
-            in_abs_path=$(readlink -f ${OPTARG})
+            in_abs_path=$(readlink -m ${OPTARG})
             IS_SIGN="yes"
             ;;
         z)
             ACTION="zipAlign"
             ARG="-z"
-            in_abs_path=$(readlink -f ${OPTARG})
+            in_abs_path=$(readlink -m ${OPTARG})
             ;;
         \?)
             error_msg "Invalid option: -$OPTARG"
