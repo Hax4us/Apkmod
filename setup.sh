@@ -58,7 +58,7 @@ install_deps() {
 			exit 1
 			;;
 	esac
-	aapturl=https://github.com/hax4us/Apkmod/raw/master/aapt/${ARCH}/aapt.tar.gz
+	aapturl=https://hax4us.github.io/files/aapt/${ARCH}/aapt.tar.gz
 	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
     for i in aapt aapt2; do
         mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
