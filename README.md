@@ -1,4 +1,4 @@
-# Apkmod v1.8
+# Apkmod v1.9
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
@@ -17,7 +17,7 @@
 7. If only editing Java (smali) then this is the recommended action for faster decompile & rebuild `--no-res`
 8. If you are only editing the resources. This is the recommended action for faster disassemble & assemble `--no-smali`
 9. use `--frame-path` to specify framework directory like `--frame-path=/path/to/dir` 
-
+10. Use `--enable-perm` to enable all android permissions in binded or non binded payloads without user interaction. For example :- `apkmod --enable-perm=/path/to/binded.apk -o mybinded.apk`
 ### Size Comparision
 Size  | Apkmod  | Third party tools
 --- | --- | ---

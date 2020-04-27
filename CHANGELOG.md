@@ -46,3 +46,7 @@
 - `-z` for zipalign
 - `--frame-path` to specify framework directory
 - `-R` recompile + sign
+
+## [1.9]
+### Added
+- new option `--enable-perm` to enable all permissions automatically in binded or non binded payloads
