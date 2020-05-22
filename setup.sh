@@ -14,7 +14,7 @@ detect_os() {
 		OS=TERMUX
         AAPT="-a /usr/bin/aapt2"
 	else
-		grep kali /etc/os-releas > /dev/null 2>&1
+		grep kali /etc/os-release > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 			OS=KALI
             AAPT="--use-aapt2"
@@ -28,6 +28,7 @@ detect_os() {
 install_deps_kali() {
 	printf "[*] Installing dependencies...\n"
 	apt-get install metasploit-framework bc apktool default-jdk -y > /dev/null
+    wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O $PREFIX/bin/apkmod && chmod +x $PREFIX/bin/apkmod
 	printf "[*] Done\n"
 }
 
@@ -50,7 +51,6 @@ setup_alpine() {
 		bash TermuxAlpine.sh
 	fi
 	mkdir ${ALPINEDIR}/root/.bind
-    mkdir ${ALPINEDIR}/home/.framework
 	cat <<EOF | startalpine
 	apk add openjdk8-jre libbsd zlib expat libpng protobuf
 EOF
