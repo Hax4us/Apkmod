@@ -50,3 +50,10 @@
 ## [1.9]
 ### Added
 - new option `--enable-perm` to enable all permissions automatically in binded or non binded payloads
+
+## [2.0]
+### Added
+- Kali support
+### Changed
+- remove option `-a` & defaults to `aapt2`
+
