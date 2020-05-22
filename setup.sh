@@ -118,7 +118,7 @@ install_scripts() {
 do_patches() {
     sed -i "s#AAPT=.*#AAPT=\"$AAPT\"#" $BINDIR/apkmod
     if [ $OS = "KALI" ]; then
-        sed s/"apktool b"/"apktool b --use-aapt2"/g /usr/share/metasploit-framework/lib/msf/core/payload/apk.rb
+        sed -i s/"apktool b"/"apktool b --use-aapt2"/g /usr/share/metasploit-framework/lib/msf/core/payload/apk.rb
     fi
 }
 
