@@ -10,7 +10,7 @@ BINDIR="${PREFIX}/bin"
 LIBDIR="${ALPINEDIR}/usr/lib"
 
 detect_os() {
-	if [ -d $HOME/.termux ]; then
+	if [ -e $BINDIR/termux-info ]; then
 		OS=TERMUX
         AAPT="-a /usr/bin/aapt2"
 	else
