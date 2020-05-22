@@ -14,7 +14,7 @@ detect_os() {
 		OS=TERMUX
         AAPT="-a /usr/bin/aapt2"
 	else
-		grep kali /etc/os-release
+		grep kali /etc/os-releas > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 			OS=KALI
             AAPT="--use-aapt2"
