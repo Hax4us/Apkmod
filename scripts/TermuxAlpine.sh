@@ -15,21 +15,8 @@ reset='\033[0m'
 # Destination Path
 
 DESTINATION=${PREFIX}/share/TermuxAlpine
-choice=""
-if [ -d ${DESTINATION} ]; then
-	printf "${red}[!] ${yellow}Alpine is already installed\nDo you want to reinstall ? (type \"y\" for yes or \"n\" for no) :${reset} "
-	read choice
-	if [ "${choice}" = "y" ]; then
-		rm -rf ${DESTINATION}
-	elif [ "${choice}" = "n" ]; then
-		exit 1
-	else
-		printf "${red}[!] Wrong input${reset}"
-		exit 1
-	fi
-
-fi
-mkdir ${DESTINATION}
+rm -rf $DESTINATION
+mkdir -p ${DESTINATION}
 cd ${DESTINATION}
 
 # Utility function for Unknown Arch

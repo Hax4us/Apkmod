@@ -12,12 +12,12 @@ LIBDIR="${ALPINEDIR}/usr/lib"
 detect_os() {
 	if [ -e $BINDIR/termux-info ]; then
 		OS=TERMUX
-        AAPT="-a /usr/bin/aapt2"
+		AAPT="-a /usr/bin/aapt2"
 	else
 		grep kali /etc/os-release > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 			OS=KALI
-            AAPT="--use-aapt2"
+			AAPT="--use-aapt2"
 		else
 			printf "${red}[!] ${yellow}Unsupported system\n"
 			exit 1
@@ -28,29 +28,16 @@ detect_os() {
 install_deps_kali() {
 	printf "[*] Installing dependencies...\n"
 	apt-get install metasploit-framework bc apktool default-jdk -y > /dev/null
-    wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O $PREFIX/bin/apkmod && chmod +x $PREFIX/bin/apkmod
+	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O $PREFIX/bin/apkmod && chmod +x $PREFIX/bin/apkmod
 	printf "[*] Done\n"
 }
 
 setup_alpine() {
-	noinstall="no"
-	if [ -d ${ALPINEDIR} ]; then
-		printf "${red}[!] ${yellow}Alpine is already installed\nDo you want to reinstall ? (type \"y\" for yes or \"n\" for no) :${reset} "   
-		read choice
-		if [ "${choice}" = "y" ]; then
-			rm -rf ${DESTINATION}
-		elif [ "${choice}" = "n" ]; then
-			noinstall="yes"
-		else
-			printf "${red}[!] Wrong input${reset}\n"
-			exit 1
-		fi
-	fi
-	if [ "${noinstall}" = "no" ]; then
+	if [ ! "$1" = "--without-alpine" ]; then
 		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/scripts/TermuxAlpine.sh -O TermuxAlpine.sh
 		bash TermuxAlpine.sh
 	fi
-	mkdir ${ALPINEDIR}/root/.bind
+	mkdir -p ${ALPINEDIR}/root/.bind
 	cat <<EOF | startalpine
 	apk add openjdk8-jre libbsd zlib expat libpng protobuf
 EOF
@@ -76,22 +63,22 @@ install_deps() {
 			ARCH=x86_64
 			;;
 		*)
-            printf "your device $(uname -m) is not supported yet"
+			printf "your device $(uname -m) is not supported yet"
 			exit 1
 			;;
 	esac
 	aapturl=https://hax4us.github.io/files/aapt/${ARCH}/aapt.tar.gz
 	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
-    for i in aapt aapt2; do
-        mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
-    done
+	for i in aapt aapt2; do
+		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
+	done
 	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.1.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
 	chmod +x ${BINDIR}/apkmod
-    chmod +x ${ALPINEDIR}/usr/bin/aapt
-    chmod +x ${ALPINEDIR}/usr/bin/aapt2
-    rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
+	chmod +x ${ALPINEDIR}/usr/bin/aapt
+	chmod +x ${ALPINEDIR}/usr/bin/aapt2
+	rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
 }
 
 install_scripts() {
@@ -100,18 +87,18 @@ install_scripts() {
 	done
 	mv apktool_termux.sh ${BINDIR}/apktool && chmod +x ${BINDIR}/apktool
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
-    if [ -d ${HOME}/metasploit-framework -a -d ${PREFIX}/opt/metasploit-framework ]; then
-        printf "${red}[!] More than one metasploit detected , remove anyone from them to install Apkmod\n${reset}"
-        exit 1
-    elif [ -d ${HOME}/metasploit-framework ]; then
-        msf_dir=${HOME}/metasploit-framework
+	if [ -d ${HOME}/metasploit-framework -a -d ${PREFIX}/opt/metasploit-framework ]; then
+		printf "${red}[!] More than one metasploit detected , remove anyone from them to install Apkmod\n${reset}"
+		exit 1
+	elif [ -d ${HOME}/metasploit-framework ]; then
+		msf_dir=${HOME}/metasploit-framework
 		mv apk.rb ${msf_dir}/lib/msf/core/payload/
 	elif [ -d ${PREFIX}/opt/metasploit-framework ]; then
-        msf_dir=${PREFIX}/opt/metasploit-framework
+		msf_dir=${PREFIX}/opt/metasploit-framework
 		mv apk.rb ${msf_dir}/lib/msf/core/payload/
 	else
 		printf "${red}[!] Metasploit is not installed${reset}"
-        exit 1
+		exit 1
 	fi
 }
 
@@ -127,13 +114,15 @@ do_patches() {
 ##################
 
 detect_os
+
 if [ $OS = "TERMUX" ]; then
 	termux-wake-lock
-	setup_alpine
+	setup_alpine "$1"
 	install_deps
 	install_scripts
 	termux-wake-unlock
 else
 	install_deps_kali
 fi
+
 do_patches
