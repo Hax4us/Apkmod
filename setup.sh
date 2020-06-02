@@ -88,8 +88,7 @@ install_scripts() {
 	mv apktool_termux.sh ${BINDIR}/apktool && chmod +x ${BINDIR}/apktool
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
 	if [ -d ${HOME}/metasploit-framework -a -d ${PREFIX}/opt/metasploit-framework ]; then
-		printf "${red}[!] More than one metasploit detected , remove anyone from them to install Apkmod\n${reset}"
-		exit 1
+		printf "${red}[!] More than one metasploit detected ,\nremove anyone from them and reinstall Apkmod\notherwise apkmod will not work as expected${reset}"
 	elif [ -d ${HOME}/metasploit-framework ]; then
 		msf_dir=${HOME}/metasploit-framework
 		mv apk.rb ${msf_dir}/lib/msf/core/payload/
@@ -97,8 +96,7 @@ install_scripts() {
 		msf_dir=${PREFIX}/opt/metasploit-framework
 		mv apk.rb ${msf_dir}/lib/msf/core/payload/
 	else
-		printf "${red}[!] Metasploit is not installed${reset}"
-		exit 1
+		printf "${red}[!] Metasploit is not installed hence -b ( bind ) option will not work${reset}"
 	fi
 }
 
