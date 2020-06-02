@@ -202,8 +202,8 @@ then
 	usage
 	exit 1
 fi
-printf "\n${yellow} You are going to install Alpine in termux ;) Cool\n press ENTER to continue\n"
-read enter
+#printf "\n${yellow} You are going to install Alpine in termux ;) Cool\n press ENTER to continue\n"
+#read enter
 
 checksysinfo
 checkdeps
