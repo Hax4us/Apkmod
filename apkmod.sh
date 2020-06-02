@@ -83,7 +83,7 @@ dir_exist() {
 decompile() {
 	local vbs_arg=""
 	print_status "Decompiling ${1}"    
-	if [ "${VERBOSE}" = "yes" ]; the
+	if [ "${VERBOSE}" = "yes" ]; then
 		vbs_arg="-v"
 	fi
 	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d -f ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
