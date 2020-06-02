@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 addprofile()
 {
-	cat > ${PREFIX}/share/TermuxAlpine/etc/profile <<- EOM
+	cat > ${PREFIX}/share/apkmod/etc/profile <<- EOM
 	export CHARSET=UTF-8
 	export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 	export PAGER=less
@@ -40,7 +40,7 @@ updrepos() {
 # thnx to @j16180339887 for DNS picker 
 addresolvconf ()
 {
-	printf "nameserver 8.8.8.8\nnameserver 8.8.4.4" > ${PREFIX}/share/TermuxAlpine/etc/resolv.conf
+	printf "nameserver 8.8.8.8\nnameserver 8.8.4.4" > ${PREFIX}/share/apkmod/etc/resolv.conf
 }
 android=$(getprop ro.build.version.release)
 addprofile

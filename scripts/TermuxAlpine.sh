@@ -14,7 +14,7 @@ reset='\033[0m'
 
 # Destination Path
 
-DESTINATION=${PREFIX}/share/TermuxAlpine
+DESTINATION=${PREFIX}/share/apkmod
 rm -rf $DESTINATION
 mkdir -p ${DESTINATION}
 cd ${DESTINATION}
@@ -133,11 +133,11 @@ addresolvconf ()
 {
   android=\$(getprop ro.build.version.release)
   if [ \${android%%.*} -lt 8 ]; then
-  [ \$(command -v getprop) ] && getprop | sed -n -e 's/^\[net\.dns.\]: \[\(.*\)\]/\1/p' | sed '/^\s*$/d' | sed 's/^/nameserver /' > \${PREFIX}/share/TermuxAlpine/etc/resolv.conf
+  [ \$(command -v getprop) ] && getprop | sed -n -e 's/^\[net\.dns.\]: \[\(.*\)\]/\1/p' | sed '/^\s*$/d' | sed 's/^/nameserver /' > \${PREFIX}/share/apkmod/etc/resolv.conf
   fi
 }
 addresolvconf
-exec proot --link2symlink -0 -r \${PREFIX}/share/TermuxAlpine/ -b /dev/ -b /sys/ -b /proc/ -b /sdcard -b /storage -b \$HOME -w /home /usr/bin/env HOME=/root PREFIX=/usr SHELL=/bin/sh TERM="\$TERM" LANG=\$LANG PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/sh --login
+exec proot --link2symlink -0 -r \${PREFIX}/share/apkmod/ -b /dev/ -b /sys/ -b /proc/ -b /sdcard -b /storage -b \$HOME -w /home /usr/bin/env HOME=/root PREFIX=/usr SHELL=/bin/sh TERM="\$TERM" LANG=\$LANG PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/sh --login
 EOM
 
 	chmod 700 $bin

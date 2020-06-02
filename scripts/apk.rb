@@ -173,8 +173,8 @@ class Msf::Payload::Apk
     #end
 
     #Create temporary directory where work will be done
-    tempdir = "/data/data/com.termux/files/usr/share/TermuxAlpine/root/.bind"
-    run_cmd("rm $PREFIX/share/TermuxAlpine/root/.local/share/apktool/framework/1.apk")
+    tempdir = "/data/data/com.termux/files/usr/share/apkmod/root/.bind"
+    run_cmd("rm -f $PREFIX/share/TermuxAlpine/root/.local/share/apktool/framework/1.apk")
 
     #keystore = "#{tempdir}/signing.keystore"
     #storepass = "android"

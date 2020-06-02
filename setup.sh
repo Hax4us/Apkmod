@@ -5,7 +5,7 @@ red='\033[1;31m'
 yellow='\033[1;33m'
 reset='\033[0m'
 
-ALPINEDIR="${PREFIX}/share/TermuxAlpine"
+ALPINEDIR="${PREFIX}/share/apkmod"
 BINDIR="${PREFIX}/bin"
 LIBDIR="${ALPINEDIR}/usr/lib"
 
@@ -63,7 +63,7 @@ install_deps() {
 			ARCH=x86_64
 			;;
 		*)
-			printf "your device $(uname -m) is not supported yet"
+			printf "your device "$(uname -m)" is not supported yet"
 			exit 1
 			;;
 	esac
@@ -117,6 +117,15 @@ detect_os
 
 if [ $OS = "TERMUX" ]; then
 	termux-wake-lock
+	# Temporary check for alpine version 
+	# so that if user has already installed
+	# TermuxAlpine then check if this alpine 
+	# was installed by apkmod or not.
+	if [ -d $PREFIX/share/TermuxAlpine ]; then
+		if [ "$(cat $PREFIX/share/TermuxAlpine/etc/alpine-release)" = "3.10.2" ]; then
+			mv $PREFIX/share/TermuxAlpine $ALPINEDIR
+		fi
+	fi
 	setup_alpine "$1"
 	install_deps
 	install_scripts
