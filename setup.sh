@@ -49,11 +49,11 @@ install_deps() {
 			apt install ${pkg} -y
 		fi
 	done
-	case "$(uname -m)" in
-		aarch64|armv8l)
+	case "$(getprop ro.product.cpu.abi)" in
+		arm64-v8a)
 			ARCH=aarch64
 			;;
-		arm|armv7l)
+		armeabi|armeabi-v7a)
 			ARCH=arm
 			;;
 		x86|i686)
