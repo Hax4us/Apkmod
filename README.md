@@ -17,6 +17,7 @@
 7. If you are only editing the resources. This is the recommended action for faster disassemble & assemble `--no-smali`
 8. use `--frame-path` to specify framework directory like `--frame-path=/path/to/dir` 
 9. Use `--enable-perm` to enable all android permissions in binded or non binded payloads without user interaction. For example :- `apkmod --enable-perm=/path/to/binded.apk -o mybinded.apk`
+10. `apkmod --to-java=/path/to/in.apk -o outfolder` will decompile dex to java. Input can be __[.apk,.dex,.zip]__
 ### Size Comparision (Termux)
 Size  | Apkmod  | Third party tools
 --- | --- | ---

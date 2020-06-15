@@ -57,3 +57,8 @@
 ### Changed
 - remove option `-a` & defaults to `aapt2`
 
+## [2.1]
+### Added 
+- jadx support
+- new option `--to-java` to decode [dex,apk,zip] to java sources
+- `--deobf` can use along with `--to-java`
