@@ -82,11 +82,15 @@ install_deps() {
 }
 
 install_scripts() {
-	for script in apktool_termux.sh apktool_alpine.sh apk.rb; do
+	for script in apktool_termux.sh apktool_alpine.sh apk.rb jadx_termux.sh jadx_alpine.sh; do
 		wget https://github.com/hax4us/Apkmod/raw/master/scripts/${script} -O ${script}
 	done
+
 	mv apktool_termux.sh ${BINDIR}/apktool && chmod +x ${BINDIR}/apktool
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
+    mv jadx_termux.sh $BINDIR/jadx && chmod +x $BINDIR/jadx
+    mv jadx_termux.sh $ALPINEDIR/bin/jadx && chmod +x $ALPINEDIR/bin/jadx
+
 	if [ -d ${HOME}/metasploit-framework -a -d ${PREFIX}/opt/metasploit-framework ]; then
 		printf "${red}[!] More than one metasploit detected ,\nremove anyone from them and reinstall Apkmod\notherwise apkmod will not work as expected${reset}"
 	elif [ -d ${HOME}/metasploit-framework ]; then
@@ -105,6 +109,14 @@ do_patches() {
     if [ $OS = "KALI" ]; then
         sed -i s/"apktool b"/"apktool b --use-aapt2"/g /usr/share/metasploit-framework/lib/msf/core/payload/apk.rb
     fi
+}
+
+jadx() {
+    JADXVER=1.1.0
+    JADXURL=https://github.com/skylot/jadx/releases/download/v${JADXVER}/jadx-$JADXVER.zip
+    wget $JADXURL
+    mkdir -p /usr/lib/jadx
+    unzip jadx-$JADXVER.zip -d /usr/lib/jadx
 }
 
 ##################
@@ -126,7 +138,8 @@ if [ $OS = "TERMUX" ]; then
 	fi
 	setup_alpine "$1"
 	install_deps
-	install_scripts
+	install_script
+	jadx
 	termux-wake-unlock
 else
 	install_deps_kali

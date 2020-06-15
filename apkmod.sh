@@ -8,7 +8,7 @@
 
 unset _JAVA_OPTIONS
 CWD=$(pwd)
-VERSION="2.0"
+VERSION="2.1"
 AAPT=""
 
 #colors
@@ -38,6 +38,8 @@ usage() {
     --frame-path    The folder location where
     framework files should be stored/read from
     --enable-perm   Enable all permissions in binded payload
+    --to-java       Decode [dex,apk,zip] to java
+    --deobf         Can use along with --to-java for obfuscated code
     ${yellow}Example:
     ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444
     ${purple}bind the payload with play.apk and saves output in given directory.
@@ -148,6 +150,11 @@ zipAlign() {
 	print_status "aligned successfully"
 }
 
+dextojava() {
+	print_status "Decoding started..."
+	jadx -d $2 $1 $DEOBF $NO_RES $NO_SRC
+}
+
 #########################
 # Validate User's input #
 #########################
@@ -166,7 +173,7 @@ validate_input() {
 		exit 1
 	fi
 
-	if [ "${1}" = "-d" -o "${1}" = "-s" -o "${1}" = "--enable-perm" ]; then
+	if [ "${1}" = "-d" -o "${1}" = "-s" -o "${1}" = "--enable-perm" -o "$1" = "-d2j" ]; then
 		file_exist "${2}"
 		dir_exist "${3%\/*}"
 	fi
@@ -276,6 +283,14 @@ while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
                     ARG="--enable-perm"
                     in_abs_path=$(readlink -m ${OPTARG#*=})
                     ;;
+                deobf)
+                    DEOBF="--deobf"
+                    ;;
+                to-java*)
+                    ACTION="dextojava"
+                    ARG="-d2j"
+                    in_abs_path=$(readlinl -m ${OPTARG#*=})
+                    ;;
             esac
             ;;
         R)
@@ -313,6 +328,8 @@ elif [ "${ARG}" = "-z" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path}
 elif [ "${ARG}" = "--enable-perm" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path}
+elif [ "$ARG" = "-d2j" ]; then
+    validate_input $ARG $in_abs_path $out_abs_path
 fi
 
 ## Lhost or lport will be ignored for all actions except bindapk
