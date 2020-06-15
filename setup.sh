@@ -115,8 +115,8 @@ jadx() {
     JADXVER=1.1.0
     JADXURL=https://github.com/skylot/jadx/releases/download/v${JADXVER}/jadx-$JADXVER.zip
     wget $JADXURL
-    mkdir -p /usr/lib/jadx
-    unzip jadx-$JADXVER.zip -d /usr/lib/jadx
+    mkdir -p $ALPINEDIR/usr/lib/jadx
+    unzip jadx-$JADXVER.zip -d $ALPINEDIR/usr/lib/jadx
 }
 
 ##################
