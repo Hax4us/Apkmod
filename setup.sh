@@ -89,7 +89,7 @@ install_scripts() {
 	mv apktool_termux.sh ${BINDIR}/apktool && chmod +x ${BINDIR}/apktool
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
     mv jadx_termux.sh $BINDIR/jadx && chmod +x $BINDIR/jadx
-    mv jadx_termux.sh $ALPINEDIR/bin/jadx && chmod +x $ALPINEDIR/bin/jadx
+    mv jadx_alpine.sh $ALPINEDIR/bin/jadx && chmod +x $ALPINEDIR/bin/jadx
 
 	if [ -d ${HOME}/metasploit-framework -a -d ${PREFIX}/opt/metasploit-framework ]; then
 		printf "${red}[!] More than one metasploit detected ,\nremove anyone from them and reinstall Apkmod\notherwise apkmod will not work as expected${reset}"
