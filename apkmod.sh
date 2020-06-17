@@ -289,7 +289,7 @@ while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
                 to-java*)
                     ACTION="dextojava"
                     ARG="-d2j"
-                    in_abs_path=$(readlinl -m ${OPTARG#*=})
+                    in_abs_path=$(readlink -m ${OPTARG#*=})
                     ;;
             esac
             ;;
