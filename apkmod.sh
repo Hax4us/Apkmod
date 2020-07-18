@@ -117,11 +117,14 @@ recompile() {
 
 signapk() {
 	print_status "Signing ${1}"
-	apksigner -p android ~/.apkmod/keystore ${1} ${2}
+
+	apksigner sign --in $1 --out $2 --ks-type PKCS12 --ks ~/apkmod/apkmod.p12 --ks-pass pass:apkmod
+
 	if [ ! -e ${2} ]; then
 		error_msg "Can't sign, take screenshot and open a issue on github"
 		exit 1
 	fi
+
 	print_status "Signed Successfully"
 }
 

@@ -280,7 +280,7 @@ class Msf::Payload::Apk
     end
 
     print_status "Signing #{injected_apk}\n"
-    run_cmd("apksigner -p android ~/.apkmod/keystore #{tempdir}/output.apk #{tempdir}/signed.apk")
+    run_cmd("apksigner sign --in #{tempdir}/output.apk --out #{tempdir}/signed.apk --ks-type PKCS12 --ks ~/.apkmod/apkmod.p12 --ks-pass pass:apkmod")
     #run_cmd("zipalign 4 #{injected_apk} #{aligned_apk}")
 
     outputapk = File.read(signed_apk)

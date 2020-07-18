@@ -67,11 +67,14 @@ install_deps() {
 			exit 1
 			;;
 	esac
+
 	aapturl=https://hax4us.github.io/files/aapt/${ARCH}/aapt.tar.gz
 	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
-	for i in aapt aapt2; do
+	
+    for i in aapt aapt2; do
 		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
 	done
+
 	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.1.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
@@ -79,6 +82,7 @@ install_deps() {
 	chmod +x ${ALPINEDIR}/usr/bin/aapt
 	chmod +x ${ALPINEDIR}/usr/bin/aapt2
 	rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
+    wget https://github.com/hax4us/Apkmod/raw/master/apkmod.p12 -O ~/.apkmod/apkmod.p12
 }
 
 install_scripts() {
