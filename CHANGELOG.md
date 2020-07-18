@@ -62,3 +62,7 @@
 - jadx support
 - new option `--to-java` to decode [dex,apk,zip] to java sources
 - `--deobf` can use along with `--to-java`
+
+## [2.2]
+### Changed
+- now apksigner in termux is from sdk so a key ( PKCS12 ) is added.
