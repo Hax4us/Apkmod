@@ -39,7 +39,7 @@ setup_alpine() {
 	fi
 	mkdir -p ${ALPINEDIR}/root/.bind
 	cat <<EOF | startalpine
-	apk add openjdk8-jre libbsd zlib expat libpng protobuf
+	apk add openjdk8-jre libbsd zlib expat libpng protobuf libunwind
 EOF
 }
 
@@ -68,18 +68,16 @@ install_deps() {
 			;;
 	esac
 
-	aapturl=https://hax4us.github.io/files/aapt/${ARCH}/aapt.tar.gz
-	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
-	
-    for i in aapt aapt2; do
-		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
-	done
+    AAPT_TAR=aapt2-a11.tar.gz
+	aapturl=https://hax4us.github.io/files/aapt/${ARCH}/$AAPT_TAR
+	wget ${aapturl} -O $AAPT_TAR && tar -xf $AAPT_TAR -C ${LIBDIR} && rm $AAPT_TAR
+    mv ${LIBDIR}/android/aapt2 ${ALPINEDIR}/usr/bin
 
 	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.1.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
 	chmod +x ${BINDIR}/apkmod
-	chmod +x ${ALPINEDIR}/usr/bin/aapt
+#	chmod +x ${ALPINEDIR}/usr/bin/aapt
 	chmod +x ${ALPINEDIR}/usr/bin/aapt2
 	rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
     wget https://github.com/hax4us/Apkmod/raw/master/apkmod.p12 -O ~/.apkmod/apkmod.p12
@@ -135,11 +133,11 @@ if [ $OS = "TERMUX" ]; then
 	# so that if user has already installed
 	# TermuxAlpine then check if this alpine 
 	# was installed by apkmod or not.
-	if [ -d $PREFIX/share/TermuxAlpine ]; then
-		if [ "$(cat $PREFIX/share/TermuxAlpine/etc/alpine-release)" = "3.10.2" ]; then
-			mv $PREFIX/share/TermuxAlpine $ALPINEDIR
-		fi
-	fi
+	#if [ -d $PREFIX/share/TermuxAlpine ]; then
+	#	if [ "$(cat $PREFIX/share/TermuxAlpine/etc/alpine-release)" = "3.10.2" ]; then
+	#		mv $PREFIX/share/TermuxAlpine $ALPINEDIR
+	#	fi
+	#fi
 	setup_alpine "$1"
 	install_deps
 	install_scripts
