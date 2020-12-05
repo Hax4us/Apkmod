@@ -34,7 +34,7 @@ install_deps_kali() {
 
 setup_alpine() {
 	if [ ! "$1" = "--without-alpine" ]; then
-		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/scripts/TermuxAlpine.sh -O TermuxAlpine.sh
+		wget https://raw.githubusercontent.com/Hax4us/Apkmod/aapt2-a11/scripts/TermuxAlpine.sh -O TermuxAlpine.sh
 		bash TermuxAlpine.sh
 	fi
 	mkdir -p ${ALPINEDIR}/root/.bind
@@ -73,12 +73,15 @@ install_deps() {
 	wget ${aapturl} -O $AAPT_TAR && tar -xf $AAPT_TAR -C ${LIBDIR} && rm $AAPT_TAR
     mv ${LIBDIR}/android/aapt2 ${ALPINEDIR}/usr/bin
 
-	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.4.1.jar
+	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.5.0.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
+
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
 	chmod +x ${BINDIR}/apkmod
+
 #	chmod +x ${ALPINEDIR}/usr/bin/aapt
 	chmod +x ${ALPINEDIR}/usr/bin/aapt2
+
 	rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
     wget https://github.com/hax4us/Apkmod/raw/master/apkmod.p12 -O ~/.apkmod/apkmod.p12
 }
