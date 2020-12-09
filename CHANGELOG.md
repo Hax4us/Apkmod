@@ -66,3 +66,7 @@
 ## [2.2]
 ### Changed
 - now apksigner in termux is from sdk so a key ( PKCS12 ) is added.
+
+## [3.0]
+### Changed
+- Latest __Apktool 2.5.0__ & __AAPT2__ With Android 11 Support

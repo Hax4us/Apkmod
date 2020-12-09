@@ -8,7 +8,7 @@
 
 unset _JAVA_OPTIONS
 CWD=$(pwd)
-VERSION="2.2"
+VERSION="3.0"
 AAPT=""
 
 #colors
