@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ########################################
 # Project : Apkmod     		       #
@@ -8,6 +8,7 @@
 
 unset _JAVA_OPTIONS
 CWD=$(pwd)
+LOC=$(which apkmod)
 VERSION="2.2"
 AAPT=""
 
@@ -193,37 +194,61 @@ validate_input() {
 
 update() {
 	temp=$(curl -L -s https://github.com/Hax4us/Apkmod/raw/master/apkmod.sh | grep -w "VERSION=" | head -n1)
-	N_VERSION=$(echo ${temp} | sed -e 's/[^0-9]\+[^0-9]/ /g' | cut -d '"' -f1)
+	C_VERSION="$temp"
+        N_VERSION=$(grep '^VERSION=' $LOC)
+check_for_update() {
+        if [[ ${C_VERSION} == ${N_VERSION} ]];then
+        update_log="Apkmod already updated."
+        else
+        update_log="Apkmod update available."
+        fi
+}
 	if [ "${1}" != "-u" ]; then
-		[ 1 -eq $(echo "${N_VERSION} != ${VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
+		check_for_update
+		print_status "$update_log"
+		[ 1 -eq $(echo "${C_VERSION} != ${N_VERSION}" | bc -l) ] && print_status "Update is available, run [ apkmod -u ] for update" && exit 1
 	fi
 	if [ "${1}" = "-u" ]; then
+		check_for_update
+		print_status "$update_log"
+		if [[ ${C_VERSION} != ${N_VERSION} ]];then
 		rm -f setup.sh
 		if [ "$2" = "--with-alpine" ]; then
+		print_status "$update_log"
 			ARGS=$2
 		else
 			ARGS=--without-alpine
 		fi
-		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh $ARGS
+wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh $ARGS
 	fi
+    fi
+}
+
+####################
+# Apkmod Installer #
+####################
+
+installer() {
+		rm -f setup.sh
+		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh
 }
 
 ##############
 #    MAIN    #
 ##############
 
+checknet() {
 # check for update only if net is ON
 wget -q --spider http://google.com
-if [ $? -eq 0 -a ! "${1}" = "-u" ]; then
-    update
+if [[ $? -eq 0 ]];then
+pwd &> /dev/null
+else
+printf "${red}The connection was error 404.\n${blue}Aokmod -h for help !\n${reset}"
+exit 0
 fi
+}
 
-if [ $# -eq 0 ]; then
-    usage
-    exit 1
-fi
-
-while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
+while getopts ":z:d:r:s:b:o:hivuVR:-:" opt; do
     case $opt in
         d)
             ACTION="decompile"
@@ -254,14 +279,21 @@ while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
             usage
             exit 0
             ;;
+
+	i)
+	    checknet
+	    printf "${yellow}Installing Apkmod Properly...${reset}\n"
+	    installer
+	    exit 0
+	    ;;
+
         v)
             printf "${yellow}${VERSION}\n${reset}"
             exit 0
             ;;
         u)
-            print_status "Updating ..."
-            update "-${opt}" "$2"
-            print_status "Update completed"
+	    checknet
+	    update "-${opt}" "$2"
             exit 0
             ;;
         V)
