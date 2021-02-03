@@ -39,7 +39,7 @@ setup_alpine() {
 	fi
 	mkdir -p ${ALPINEDIR}/root/.bind
 	cat <<EOF | startalpine
-	apk add openjdk8-jre libbsd zlib expat libpng protobuf
+	apk add openjdk8 libbsd zlib expat libpng protobuf
 EOF
 }
 
@@ -86,7 +86,7 @@ install_deps() {
 }
 
 install_scripts() {
-	for script in apktool_termux.sh apktool_alpine.sh apk.rb jadx_termux.sh jadx_alpine.sh; do
+	for script in signapk_termux.sh signapk_alpine.sh apktool_termux.sh apktool_alpine.sh apk.rb jadx_termux.sh jadx_alpine.sh; do
 		wget https://github.com/hax4us/Apkmod/raw/master/scripts/${script} -O ${script}
 	done
 
@@ -94,6 +94,8 @@ install_scripts() {
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
     mv jadx_termux.sh $BINDIR/jadx && chmod +x $BINDIR/jadx
     mv jadx_alpine.sh $ALPINEDIR/bin/jadx && chmod +x $ALPINEDIR/bin/jadx
+    mv signapk_termux.sh $BINDIR/signapk && chmod +x $BINDIR/signapk
+    mv signapk_alpine.sh $ALPINEDIR/bin/signapk && chmod +x $ALPINEDIR/bin/signapk
 
 	if [ -d ${HOME}/metasploit-framework -a -d ${PREFIX}/opt/metasploit-framework ]; then
 		printf "${red}[!] More than one metasploit detected ,\nremove anyone from them and reinstall Apkmod\notherwise apkmod will not work as expected${reset}"

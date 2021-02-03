@@ -118,7 +118,8 @@ recompile() {
 signapk() {
 	print_status "Signing ${1}"
 
-	apksigner sign --in $1 --out $2 --ks-type PKCS12 --ks ~/.apkmod/apkmod.p12 --ks-pass pass:apkmod
+	#apksigner sign --in $1 --out $2 --ks-type PKCS12 --ks ~/.apkmod/apkmod.p12 --ks-pass pass:apkmod
+	signapk -signedjar $2 -storepass hax4us -sigalg SHA1withRSA -digestalg SHA1 -keystore \$HOME/apkmod.keystore $1 hax4us
 
 	if [ ! -e ${2} ]; then
 		error_msg "Can't sign, take screenshot and open a issue on github"
