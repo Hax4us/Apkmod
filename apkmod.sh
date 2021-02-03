@@ -55,7 +55,7 @@ enable_perm() {
 		sed -i "s/$i.*/$i: '22'/" $tmp_dir/apktool.yml
 	done
 	recompile ${tmp_dir} ${2}
-	signapk ${2} temp.apk
+	signApk ${2} temp.apk
 	mv temp.apk ${2}
 	rm -r $tmp_dir
 	print_status "Done"
@@ -111,11 +111,11 @@ recompile() {
 	fi
 	print_status "Recompiled to ${2}"
 	if [ "${IS_SIGN}" = "yes" ]; then
-		signapk ${2} ${2%.*}_signed.apk
+		signApk ${2} ${2%.*}_signed.apk
 	fi
 }
 
-signapk() {
+signApk() {
 	print_status "Signing ${1}"
 
 	#apksigner sign --in $1 --out $2 --ks-type PKCS12 --ks ~/.apkmod/apkmod.p12 --ks-pass pass:apkmod
@@ -237,7 +237,7 @@ while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
             in_abs_path=$(readlink -m ${OPTARG})
             ;;
         s)
-            ACTION="signapk"
+            ACTION="signApk"
             ARG="-s"
             in_abs_path=$(readlink -m ${OPTARG})
             ;;
