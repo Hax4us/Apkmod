@@ -55,7 +55,7 @@ enable_perm() {
 		sed -i "s/$i.*/$i: '22'/" $tmp_dir/apktool.yml
 	done
 	recompile ${tmp_dir} ${2}
-	signApk ${2} temp.apk
+	signApk ${2} $TMPDIR/temp.apk
 	mv temp.apk ${2}
 	rm -r $tmp_dir
 	print_status "Done"
