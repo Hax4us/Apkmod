@@ -56,7 +56,7 @@ enable_perm() {
 	done
 	recompile ${tmp_dir} ${2}
 	signApk ${2} $TMPDIR/temp.apk
-	mv temp.apk ${2}
+	mv $TMPDIR/temp.apk ${2}
 	rm -r $tmp_dir
 	print_status "Done"
 }
