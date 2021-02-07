@@ -27,4 +27,4 @@ after installation | Around 100 MB | Around 700-900 MB
 Because it has Alpine instead of Ubuntu, kali, parrot or other glibc based distros.
 
 #### You can join me on telegram also 
-https://t.me/joinchat/F1x4pElUinv6KLDTREJhZg
+https://t.me/hax4us_group
