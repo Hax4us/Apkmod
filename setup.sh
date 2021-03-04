@@ -68,7 +68,7 @@ install_deps() {
 			;;
 	esac
 
-	aapturl=https://hax4us.github.io/files/aapt/${ARCH}/aapt.tar.gz
+	aapturl=https://github.com/Hax4us/Hax4us.github.io/blob/master/files/aapt/$ARCH/aapt.tar.gz?raw=true
 	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
 	
     for i in aapt aapt2; do
