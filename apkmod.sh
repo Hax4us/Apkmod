@@ -188,7 +188,7 @@ validate_input() {
 		exit 1
 	fi
 
-	if [ "${1}" = "-d" -o "${1}" = "-s" -o "${1}" = "--enable-perm" -o "$1" = "-d2j" ]; then
+	if [ "${1}" = "-d" -o "${1}" = "-s" -o "${1}" = "--enable-perm" -o "$1" = "-d2j" -o "$1" = "--appname" ]; then
 		file_exist "${2}"
 		dir_exist "${3%\/*}"
 	fi
@@ -315,6 +315,10 @@ while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
                     ;;
             esac
             ;;
+
+        i)
+            in_abs_path=$(readlink -m ${OPTARG})
+            ;;
         R)
             ACTION="recompile"
             ARG="-r"
@@ -353,7 +357,7 @@ elif [ "${ARG}" = "--enable-perm" ]; then
 elif [ "$ARG" = "-d2j" ]; then
     validate_input $ARG $in_abs_path $out_abs_path
 elif [ "$ARG" = "--appname" ]; then
-    # no need :)
+    validate_input $ARG $in_abs_path $out_abs_path
 fi
 
 ## Lhost or lport will be ignored for all actions except bindapk
