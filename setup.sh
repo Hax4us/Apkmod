@@ -44,7 +44,7 @@ EOF
 }
 
 install_deps() {
-	for pkg in aapt apksigner wget bc; do
+	for pkg in aapt apksigner wget bc busybox sed; do
 		if [ ! -f ${BINDIR}/${pkg} ]; then
 			apt install ${pkg} -y
 		fi
