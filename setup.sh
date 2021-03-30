@@ -12,7 +12,7 @@ LIBDIR="${ALPINEDIR}/usr/lib"
 detect_os() {
 	if [ -e $BINDIR/termux-info ]; then
 		OS=TERMUX
-		AAPT="-a /usr/bin/aapt2"
+		#AAPT="-a /usr/bin/aapt2"
 	else
 		grep kali /etc/os-release > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
@@ -111,8 +111,53 @@ install_scripts() {
 }
 
 do_patches() {
-    sed -i "s#AAPT=.*#AAPT=\"$AAPT\"#" $BINDIR/apkmod
+    cd ${msf_dir}
+    for i in "msfvenom" "lib/msf/core/payload_generator.rb"; do
+        if [ ! -e "${i}.orig" ]; then
+            cp ${i} ${i}.orig
+        fi
+    done
+    busybox grep "#patched" msfvenom > /dev/null
+    if [ $? -ne 0 ]; then
+        line_num=$(busybox grep -n "help" msfvenom | cut -d ":" -f1)
+        line_num=$((${line_num}-1))
+        busybox awk -v "n=${line_num}" -v "s=\n\topt.on('--use-aapt','Use aapt for recompiling') do\n\t\topts[:use_aapt] = true\n\tend" '(NR==n) { print s } 1' msfvenom.orig > msfvenom
+        if [ $? -eq 0 ]; then
+            printf "#patched" >> msfvenom
+        else
+            printf "${red}[!] can't patch msfvenom\n${reset}"
+            exit 1
+        fi
+    fi
+    busybox grep "#patched" lib/msf/core/payload_generator.rb > /dev/null
+    if [ $? -ne 0 ]; then
+        line_num=$(busybox grep -n ":add_code" lib/msf/core/payload_generator.rb | head -n1 | cut -d ":" -f1)
+        line_num=$((${line_num}-2))
+        busybox awk -v "n=${line_num}" -v "s=\t# @\!attribute  use_aapt\n\t#   @return [String] use aapt or not\n\tattr_accessor :use_aapt" '(NR==n) { print s } 1' lib/msf/core/payload_generator.rb.orig > lib/msf/core/payload_generator.rb
+        if [ $? -ne 0 ]; then
+            printf "${red}[!] can't patch payload_generator.rb\n${reset}"
+            exit 1
+        fi
+        line_num=$(busybox grep -n "@framework" lib/msf/core/payload_generator.rb | head -n1 | cut -d ":" -f1)
+        line_num=$((${line_num}-2))
+        busybox sed -i "${line_num}s/.*/\t@use_aapt = opts.fetch(:use_aapt,false)/" lib/msf/core/payload_generator.rb
+        if [ $? -ne 0 ]; then
+            printf "${red}[!] can't patch payload_genereator.rb\n${reset}"
+            exit 1
+        fi
+        line_num=$(busybox grep -n "apk_backdoor.backdoor_apk" lib/msf/core/payload_generator.rb | cut -d ":" -f1)
+        busybox sed -i "${line_num}s/.*/\t\traw_payload = apk_backdoor.backdoor_apk(template, generate_raw_payload, use_aapt)/" lib/msf/core/payload_generator.rb
+        if [ $? -eq 0 ]; then
+            printf "#patched" >> lib/msf/core/payload_generator.rb
+        else
+            printf "${red}[!] can't patch payload_generator.rb\n${reset}"
+            exit 1
+        fi
+    fi
+
+    #sed -i "s#AAPT=.*#AAPT=\"$AAPT\"#" $BINDIR/apkmod
     if [ $OS = "KALI" ]; then
+        sed -i "s#AAPT=.*#AAPT=\"$AAPT\"#" $BINDIR/apkmod
         sed -i s/"apktool b"/"apktool b --use-aapt2"/g /usr/share/metasploit-framework/lib/msf/core/payload/apk.rb
     fi
 }

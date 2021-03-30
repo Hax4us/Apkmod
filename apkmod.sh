@@ -8,8 +8,8 @@
 
 unset _JAVA_OPTIONS
 CWD=$(pwd)
-VERSION="2.2"
-AAPT=""
+VERSION="3.0"
+#AAPT=""
 
 #colors
 cyan='\033[1;36m'                      
@@ -24,6 +24,7 @@ usage() {
 	printf "${yellow}Usage: apkmod [option] [/path/to/input.apk] -o [/path/to/output.apk] [EXTRAARGS]
     ${purple}valid options are:${blue}
     -v              print version
+    -a              use aapt instead of aapt2
     -d              For decompiling
     -r              For recompiling
     -R              recompile + sign
@@ -32,6 +33,7 @@ usage() {
     -o              Specify output file or directory
     -V              verbose output
     -z              for zipalign
+    --appname       change app name
     --no-res        prevents decompiling of resources
     --no-smali      prevents dessambly of dex files
     --no-assets     prevents decoding of unknown assets file
@@ -46,6 +48,15 @@ usage() {
     ${green}Apkmod is like a bridge between your termux and 
     alpine by which you can easily decompile recompile signapk and 
     even bind the payload using metasploit\n${reset}"
+}
+
+change_appname() {
+    tmp_dir=$(mktemp -d)
+    decompile ${1} ${tmp_dir} --no-src --no-assets
+    sed -i -z "s#android:label.*#android:label=\"$APPNAME\"#" ${tmp_dir}/AndroidManifest.xml
+    recompile ${tmp_dir} ${2}
+    rm -r ${tmp_dir}
+    print_status "Done"
 }
 
 enable_perm() {
@@ -224,8 +235,11 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
+while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
     case $opt in
+        a)
+            USE_AAPT="yes"
+            ;;
         d)
             ACTION="decompile"
             ARG="-d"
@@ -295,6 +309,10 @@ while getopts ":z:d:r:s:b:o:hvuVR:-:" opt; do
                     ARG="-d2j"
                     in_abs_path=$(readlink -m ${OPTARG#*=})
                     ;;
+                appname)
+                    ACTION="change_appname"
+                    APPNAME="${OPTARG#*=}"
+                    ;;
             esac
             ;;
         R)
@@ -334,6 +352,8 @@ elif [ "${ARG}" = "--enable-perm" ]; then
     validate_input ${ARG} ${in_abs_path} ${out_abs_path}
 elif [ "$ARG" = "-d2j" ]; then
     validate_input $ARG $in_abs_path $out_abs_path
+elif [ "$ARG" = "--appname" ]; then
+    # no need :)
 fi
 
 ## Lhost or lport will be ignored for all actions except bindapk

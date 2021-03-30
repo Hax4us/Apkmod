@@ -66,3 +66,9 @@
 ## [2.2]
 ### Changed
 - now apksigner in termux is from sdk so a key ( PKCS12 ) is added.
+
+## [3.0]
+### Added
+- introducing `-a` option again but now for `aapt`
+### Changed
+- update aapt2 for Android 11

@@ -141,7 +141,7 @@ class Msf::Payload::Apk
     return orig_cert_data
   end
 
-  def backdoor_apk(apkfile, raw_payload)
+  def backdoor_apk(apkfile, raw_payload, use_aapt)
     unless apkfile && File.readable?(apkfile)
       usage
       raise RuntimeError, "Invalid template: #{apkfile}"
@@ -194,6 +194,12 @@ class Msf::Payload::Apk
 
     File.open("#{tempdir}/payload.apk", "wb") {|file| file.puts raw_payload }
     FileUtils.cp apkfile, "#{tempdir}/original.apk"
+
+    if use_aapt
+      aapt = "-a /usr/bin/aapt"
+    else
+      aapt = "-a /usr/bin/aapt2"
+    end
 
     print_status "Decompiling original APK..\n"
     run_cmd("apktool d #{tempdir}/original.apk -o #{tempdir}/original")
@@ -273,7 +279,7 @@ class Msf::Payload::Apk
     #run_cmd("find #{tempdir}/original -name \"*.xml\" -exec sed -i '/\\/\\$/d' {} \\;")
     #run_cmd("find #{tempdir}/original -name \"\\$*\" -delete")
 
-    apktool_output = run_cmd("apktool b -a /usr/bin/aapt2 -o #{tempdir}/output.apk #{tempdir}/original")
+    apktool_output = run_cmd("apktool b #{aapt} -o #{tempdir}/output.apk #{tempdir}/original")
     unless File.readable?(injected_apk)
       print_error apktool_output
       raise RuntimeError, "Unable to rebuild apk with apktool"
