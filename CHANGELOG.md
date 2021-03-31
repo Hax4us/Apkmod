@@ -70,5 +70,6 @@
 ## [3.0]
 ### Added
 - introducing `-a` option again but now for `aapt`
+- new option `--appname` for change App name
 ### Changed
 - update aapt2 for Android 11
