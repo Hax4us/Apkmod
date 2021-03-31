@@ -38,8 +38,8 @@ setup_alpine() {
 		bash TermuxAlpine.sh
 	fi
 	mkdir -p ${ALPINEDIR}/root/.bind
-	cat <<EOF | startalpine
-	apk add openjdk8 libbsd zlib expat libpng protobuf
+	cat <<EOF | apkmalpine
+	apk add openjdk8 libbsd zlib expat libpng protobuf libunwind
 EOF
 }
 

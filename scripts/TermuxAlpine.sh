@@ -124,7 +124,7 @@ extract() {
 # Utility function for login file
 
 createloginfile() {
-	bin=${PREFIX}/bin/startalpine
+	bin=${PREFIX}/bin/apkmalpine
 	cat > $bin <<- EOM
 #!/data/data/com.termux/files/usr/bin/bash -e
 unset LD_PRELOAD
@@ -166,8 +166,8 @@ cleanup() {
 		printf "$red not installed so not removed${reset}\n"
 		exit
 	fi
-	if [ -e ${PREFIX}/bin/startalpine ]; then
-		rm ${PREFIX}/bin/startalpine
+	if [ -e ${PREFIX}/bin/apkmalpine ]; then
+		rm ${PREFIX}/bin/apkmalpine
 		printf "$yellow uninstalled :) ${reset}\n"
 		exit
 	else

