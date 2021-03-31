@@ -53,7 +53,7 @@ usage() {
 change_appname() {
     tmp_dir=$(mktemp -d)
     decompile ${1} ${tmp_dir} --no-src --no-assets
-    sed -i -z "s#android:label.*#android:label=\"$APPNAME\"#" ${tmp_dir}/AndroidManifest.xml
+    sed -i -e "0,/android:label.* / s/android:label.* /android:label=\"$APPNAME\" /" ${tmp_dir}/AndroidManifest.xml
     recompile ${tmp_dir} ${2}
     rm -r ${tmp_dir}
     print_status "Done"
@@ -116,7 +116,7 @@ recompile() {
 		vbs_arg="-v"
 	fi
 
-    if [ "${USE_AAPT2}" = "yes" ]; then
+    if [ "${USE_AAPT}" = "yes" ]; then
         AAPT=" -a /usr/bin/aapt"
     else
         AAPT="-a /usr/bin/aapt2"
@@ -248,7 +248,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
+while getopts ":z:d:r:s:b:o:i:ahvuVR:-:" opt; do
     case $opt in
         a)
             USE_AAPT="yes"
@@ -322,8 +322,9 @@ while getopts ":z:d:r:s:b:o:ahvuVR:-:" opt; do
                     ARG="-d2j"
                     in_abs_path=$(readlink -m ${OPTARG#*=})
                     ;;
-                appname)
+                appname*)
                     ACTION="change_appname"
+                    ARG="--appname"
                     APPNAME="${OPTARG#*=}"
                     ;;
             esac
