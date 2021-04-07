@@ -174,7 +174,8 @@ class Msf::Payload::Apk
 
     #Create temporary directory where work will be done
     tempdir = "/data/data/com.termux/files/usr/share/apkmod/root/.bind"
-    run_cmd("rm -f $PREFIX/share/TermuxAlpine/root/.local/share/apktool/framework/1.apk")
+    #run_cmd("rm -f $PREFIX/share/TermuxAlpine/root/.local/share/apktool/framework/1.apk")
+    frameworkdir = "/data/data/com.termux/files/home/.apkmod/framework"
 
     #keystore = "#{tempdir}/signing.keystore"
     #storepass = "android"
@@ -279,7 +280,7 @@ class Msf::Payload::Apk
     #run_cmd("find #{tempdir}/original -name \"*.xml\" -exec sed -i '/\\/\\$/d' {} \\;")
     #run_cmd("find #{tempdir}/original -name \"\\$*\" -delete")
 
-    apktool_output = run_cmd("apktool b #{aapt} -o #{tempdir}/output.apk #{tempdir}/original")
+    apktool_output = run_cmd("apktool b #{aapt} -o #{tempdir}/output.apk #{tempdir}/original -p #{frameworkdir}")
     unless File.readable?(injected_apk)
       print_error apktool_output
       raise RuntimeError, "Unable to rebuild apk with apktool"

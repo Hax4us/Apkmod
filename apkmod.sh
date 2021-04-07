@@ -122,7 +122,7 @@ recompile() {
         AAPT="-a /usr/bin/aapt2"
     fi
 
-	apktool ${vbs_arg} b $AAPT -o ${2} ${1}
+	apktool ${vbs_arg} b $AAPT -o ${2} ${1} -p ${FRAMEPATH:-$HOME/.apkmod/framework} 
 	if [ ! -e ${2} ]; then
 		error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
 		exit 1
