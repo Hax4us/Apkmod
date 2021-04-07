@@ -73,3 +73,7 @@
 - new option `--appname` for change App name
 ### Changed
 - update aapt2 for Android 11
+
+## [3.1]
+### Changed
+- update apktool to 2.5.0
