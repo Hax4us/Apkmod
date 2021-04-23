@@ -107,7 +107,7 @@ install_scripts() {
 		mv apk.rb ${msf_dir}/lib/msf/core/payload/
 	else
 		printf "${red}[!] Metasploit is not installed hence -b ( bind ) option will not work${reset}"
-        HAS_METASPLOIT="yes"
+        HAS_METASPLOIT="no"
 	fi
 }
 
@@ -194,7 +194,7 @@ if [ $OS = "TERMUX" ]; then
 	install_scripts
 	jadx
 	termux-wake-unlock
-    if [ "$HAS_METASPLOIT" = "yes" ]; then
+    if [ ! "$HAS_METASPLOIT" = "no" ]; then
         do_patches
     fi
 else
