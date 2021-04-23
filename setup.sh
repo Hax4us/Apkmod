@@ -107,6 +107,7 @@ install_scripts() {
 		mv apk.rb ${msf_dir}/lib/msf/core/payload/
 	else
 		printf "${red}[!] Metasploit is not installed hence -b ( bind ) option will not work${reset}"
+        HAS_METASPLOIT="yes"
 	fi
 }
 
@@ -182,18 +183,21 @@ if [ $OS = "TERMUX" ]; then
 	# so that if user has already installed
 	# TermuxAlpine then check if this alpine 
 	# was installed by apkmod or not.
-	if [ -d $PREFIX/share/TermuxAlpine ]; then
-		if [ "$(cat $PREFIX/share/TermuxAlpine/etc/alpine-release)" = "3.10.2" ]; then
-			mv $PREFIX/share/TermuxAlpine $ALPINEDIR
-		fi
-	fi
+	#if [ -d $PREFIX/share/TermuxAlpine ]; then
+	#	if [ "$(cat $PREFIX/share/TermuxAlpine/etc/alpine-release)" = "3.10.2" ]; then
+	#		mv $PREFIX/share/TermuxAlpine $ALPINEDIR
+	#	fi
+	#fi
+
 	setup_alpine "$1"
 	install_deps
 	install_scripts
 	jadx
 	termux-wake-unlock
+    if [ "$HAS_METASPLOIT" = "yes" ]; then
+        do_patches
+    fi
 else
 	install_deps_kali
+    do_patches_kali
 fi
-
-do_patches
