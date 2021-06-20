@@ -100,7 +100,7 @@ decompile() {
 	if [ "${VERBOSE}" = "yes" ]; then
 		vbs_arg="-v"
 	fi
-	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d -f ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
+	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d ${3} ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
 	rm -f $HOME/.apkmod/framework/1.apk
 	if [ ! -e ${2} ]; then
 		error_msg "Can't decompile, take screenshot and open a issue on github"
@@ -250,7 +250,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":z:d:r:s:b:o:i:ahvuVR:-:" opt; do
+while getopts ":z:d:r:s:b:o:i:ahvuVR:-:f" opt; do
     case $opt in
         a)
             USE_AAPT="yes"
@@ -350,6 +350,9 @@ while getopts ":z:d:r:s:b:o:i:ahvuVR:-:" opt; do
             error_msg "Invalid option: -$OPTARG"
             exit 1
             ;;
+        f)
+            FORCE_DELETE="-f"
+            ;;
         :)
             error_msg "option -$OPTARG requires an argument"
             exit 1
@@ -377,4 +380,4 @@ elif [ "$ARG" = "--appname" ]; then
 fi
 
 ## Lhost or lport will be ignored for all actions except bindapk
-${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path} ${NO_RES} ${NO_SMALI} ${NO_ASSETS}
+${ACTION} ${LHOST} ${LPORT} ${in_abs_path} ${out_abs_path} ${NO_RES} ${NO_SMALI} ${NO_ASSETS} ${FORCE_DELETE}
