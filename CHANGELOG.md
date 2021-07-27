@@ -32,7 +32,7 @@
 - custom path of framework directory
 - new flag `-V` to enable verbose mode for decompiling & recompiling only
 ### Changed
-- update apktool to 2.4.1 
+- update apktool to 2.4.1
 - remove framework app __1.apk__ after each decompiling
 
 ## [1.7]
@@ -58,7 +58,7 @@
 - remove option `-a` & defaults to `aapt2`
 
 ## [2.1]
-### Added 
+### Added
 - jadx support
 - new option `--to-java` to decode [dex,apk,zip] to java sources
 - `--deobf` can use along with `--to-java`

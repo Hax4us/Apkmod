@@ -12,11 +12,11 @@ VERSION="3.1"
 #AAPT=""
 
 #colors
-cyan='\033[1;36m'                      
-green='\033[1;32m'                     
+cyan='\033[1;36m'
+green='\033[1;32m'
 red='\033[1;31m'
-yellow='\033[1;33m' 
-blue='\033[1;34m'                      
+yellow='\033[1;33m'
+blue='\033[1;34m'
 purple='\033[1;35m'
 reset='\033[0m'
 
@@ -45,8 +45,8 @@ usage() {
     ${yellow}Example:
     ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444
     ${purple}bind the payload with play.apk and saves output in given directory.
-    ${green}Apkmod is like a bridge between your termux and 
-    alpine by which you can easily decompile recompile signapk and 
+    ${green}Apkmod is like a bridge between your termux and
+    alpine by which you can easily decompile recompile signapk and
     even bind the payload using metasploit\n${reset}"
 }
 
@@ -96,7 +96,7 @@ dir_exist() {
 
 decompile() {
 	local vbs_arg=""
-	print_status "Decompiling ${1}"    
+	print_status "Decompiling ${1}"
 	if [ "${VERBOSE}" = "yes" ]; then
 		vbs_arg="-v"
 	fi
@@ -122,7 +122,7 @@ recompile() {
         AAPT="-a /usr/bin/aapt2"
     fi
 
-	apktool ${vbs_arg} b $AAPT -o ${2} ${1} -p ${FRAMEPATH:-$HOME/.apkmod/framework} 
+	apktool ${vbs_arg} b $AAPT -o ${2} ${1} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
 	if [ ! -e ${2} ]; then
 		error_msg "Try again with -a option\nBut if still can't recompile, take screenshot and open a issue on github"
 		exit 1

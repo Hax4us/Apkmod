@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/sh
 
-#colors 
-red='\033[1;31m'  
+#colors
+red='\033[1;31m'
 yellow='\033[1;33m'
 reset='\033[0m'
 
@@ -70,7 +70,7 @@ install_deps() {
 
 	aapturl=https://github.com/Hax4us/Hax4us.github.io/blob/master/files/aapt/$ARCH/aapt.tar.gz?raw=true
 	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
-	
+
     for i in aapt aapt2; do
 		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
 	done
@@ -179,9 +179,9 @@ detect_os
 
 if [ $OS = "TERMUX" ]; then
 	termux-wake-lock
-	# Temporary check for alpine version 
+	# Temporary check for alpine version
 	# so that if user has already installed
-	# TermuxAlpine then check if this alpine 
+	# TermuxAlpine then check if this alpine
 	# was installed by apkmod or not.
 	#if [ -d $PREFIX/share/TermuxAlpine ]; then
 	#	if [ "$(cat $PREFIX/share/TermuxAlpine/etc/alpine-release)" = "3.10.2" ]; then

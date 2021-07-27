@@ -37,7 +37,7 @@ updrepos() {
 	http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 	EOM
 }
-# thnx to @j16180339887 for DNS picker 
+# thnx to @j16180339887 for DNS picker
 addresolvconf ()
 {
 	printf "nameserver 8.8.8.8\nnameserver 8.8.4.4" > ${PREFIX}/share/apkmod/etc/resolv.conf
