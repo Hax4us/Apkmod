@@ -83,10 +83,12 @@ install_deps() {
 	chmod +x ${ALPINEDIR}/usr/bin/aapt2
 	rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
     wget https://github.com/hax4us/Apkmod/raw/master/apkmod.p12 -O ~/.apkmod/apkmod.p12
+
+    wget https://github.com/hax4us/Apkmod/raw/master/apkmod/signkill.jar -O ~/.apkmod/signkill.jar
 }
 
 install_scripts() {
-	for script in apktool_termux.sh apktool_alpine.sh apk.rb jadx_termux.sh jadx_alpine.sh; do
+	for script in signkill.sh apktool_termux.sh apktool_alpine.sh apk.rb jadx_termux.sh jadx_alpine.sh; do
 		wget https://github.com/hax4us/Apkmod/raw/master/scripts/${script} -O ${script}
 	done
 
@@ -94,6 +96,7 @@ install_scripts() {
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
     mv jadx_termux.sh $BINDIR/jadx && chmod +x $BINDIR/jadx
     mv jadx_alpine.sh $ALPINEDIR/bin/jadx && chmod +x $ALPINEDIR/bin/jadx
+    mv signkill.sh $BINDIR/signkill && chmod +x $BINDIR/bin/signkill
     #mv signapk_termux.sh $BINDIR/signapk && chmod +x $BINDIR/signapk
     #mv signapk_alpine.sh $ALPINEDIR/bin/signapk && chmod +x $ALPINEDIR/bin/signapk
 
