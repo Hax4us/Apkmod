@@ -100,7 +100,7 @@ decompile() {
 	if [ "${VERBOSE}" = "yes" ]; then
 		vbs_arg="-v"
 	fi
-	apktool ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d ${3} ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
+	apktool ${FORCE_DELETE} ${NO_ASSETS} ${NO_RES} ${NO_SMALI} ${vbs_arg} d ${3} ${1} -o ${2} -p ${FRAMEPATH:-$HOME/.apkmod/framework}
 	rm -f $HOME/.apkmod/framework/1.apk
 	if [ ! -e ${2} ]; then
 		error_msg "Can't decompile, take screenshot and open a issue on github"
@@ -136,8 +136,8 @@ recompile() {
 signApk() {
 	print_status "Signing ${1}"
 
-	#apksigner sign --in $1 --out $2 --ks-type PKCS12 --ks ~/.apkmod/apkmod.p12 --ks-pass pass:apkmod
-	signapk -signedjar $2 -storepass hax4us -sigalg SHA1withRSA -digestalg SHA1 -keystore \$HOME/apkmod.keystore $1 hax4us
+	apksigner sign --in $1 --out $2 --ks-type PKCS12 --ks ~/.apkmod/apkmod.p12 --ks-pass pass:apkmod
+	#signapk -signedjar $2 -storepass hax4us -sigalg SHA1withRSA -digestalg SHA1 -keystore \$HOME/apkmod.keystore $1 hax4us
 
 	if [ ! -e ${2} ]; then
 		error_msg "Can't sign, take screenshot and open a issue on github"
