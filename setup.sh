@@ -82,9 +82,12 @@ install_deps() {
 	chmod +x ${ALPINEDIR}/usr/bin/aapt
 	chmod +x ${ALPINEDIR}/usr/bin/aapt2
 	rm -rf ~/.apkmod && mkdir -p ~/.apkmod/framework
-    wget https://github.com/hax4us/Apkmod/raw/master/apkmod.p12 -O ~/.apkmod/apkmod.p12
 
-    wget https://github.com/hax4us/Apkmod/raw/master/apkmod/signkill.jar -O ~/.apkmod/signkill.jar
+    mkdir -p ~/.apkmod/hooks
+
+    for file in apkmod.p12 signkill.jar hooks/hook2.smali hooks/hook.smali hooks/hook2.dex; do
+        wget https://github.com/hax4us/Apkmod/raw/master/$file -O ~/.apkmod/$file 
+    done
 }
 
 install_scripts() {
