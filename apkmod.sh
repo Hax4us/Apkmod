@@ -199,7 +199,7 @@ signature_bypass() {
 
 validate_input() {
 	if [ "${1}" = "-b" ]; then
-		if [ "$#" -ne 6 ]; then
+		if [ "$#" -ne 7 ]; then
 			usage
 			exit 1
 		fi
