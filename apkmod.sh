@@ -198,6 +198,11 @@ signature_bypass() {
 #########################
 
 validate_input() {
+    if [ ! "${2}" ]; then
+        print_status "-i parameter missing, no input specified"
+        exit 1
+    fi
+
 	if [ "${1}" = "-b" ]; then
 		if [ "$#" -ne 5 ]; then
 			usage
