@@ -99,7 +99,7 @@ install_scripts() {
 	mv apktool_alpine.sh ${ALPINEDIR}/bin/apktool && chmod +x ${ALPINEDIR}/bin/apktool
     mv jadx_termux.sh $BINDIR/jadx && chmod +x $BINDIR/jadx
     mv jadx_alpine.sh $ALPINEDIR/bin/jadx && chmod +x $ALPINEDIR/bin/jadx
-    mv signkill.sh $BINDIR/signkill && chmod +x $BINDIR/bin/signkill
+    mv signkill.sh $BINDIR/signkill && chmod +x $BINDIR/signkill
     #mv signapk_termux.sh $BINDIR/signapk && chmod +x $BINDIR/signapk
     #mv signapk_alpine.sh $ALPINEDIR/bin/signapk && chmod +x $ALPINEDIR/bin/signapk
 
