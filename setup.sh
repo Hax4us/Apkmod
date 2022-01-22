@@ -75,7 +75,7 @@ install_deps() {
 		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
 	done
 
-	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.5.0.jar
+	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.6.0.jar
 	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
 	chmod +x ${BINDIR}/apkmod
