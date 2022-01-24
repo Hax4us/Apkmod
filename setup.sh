@@ -53,15 +53,15 @@ install_deps() {
 		arm64-v8a)
 			ARCH=aarch64
 			;;
-		armeabi|armeabi-v7a)
-			ARCH=arm
-			;;
-		x86|i686)
-			ARCH=x86
-			;;
-		x86_64)
-			ARCH=x86_64
-			;;
+		#armeabi|armeabi-v7a)
+		#	ARCH=arm
+		#	;;
+		#x86|i686)
+		#	ARCH=x86
+		#	;;
+		#x86_64)
+		#	ARCH=x86_64
+		#	;;
 		*)
 			printf "your device "$(uname -m)" is not supported yet"
 			exit 1
