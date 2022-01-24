@@ -77,3 +77,8 @@
 ## [3.1]
 ### Changed
 - update apktool to 2.5.0
+
+## [4.1]
+### Changed
+- update jadx to 1.3.2
+- use custom apktool

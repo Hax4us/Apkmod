@@ -9,6 +9,13 @@ ALPINEDIR="${PREFIX}/share/apkmod"
 BINDIR="${PREFIX}/bin"
 LIBDIR="${ALPINEDIR}/usr/lib"
 
+APKTOOL_VERSION="2.6.1"
+APKTOOL_URL="https://github.com/Hax4us/Apkmod/releases/download/v${APKTOOL_VERSION}/apktool-${APKTOOL_VERSION}.apk"
+
+JADX_VERSION="1.3.2"
+JADX_URL=https://github.com/skylot/jadx/releases/download/v${JADX_VERSION}/jadx-${JADX_VERSION}.zip
+
+
 detect_os() {
 	if [ -e $BINDIR/termux-info ]; then
 		OS=TERMUX
@@ -75,8 +82,7 @@ install_deps() {
 		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
 	done
 
-	apktoolurl=https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.5.0.jar
-	wget ${apktoolurl} -O ${ALPINEDIR}/opt/apktool.jar
+	wget ${APKTOOL_URL} -O ${ALPINEDIR}/opt/apktool.jar
 	wget https://github.com/hax4us/Apkmod/raw/master/apkmod.sh -O ${BINDIR}/apkmod
 	chmod +x ${BINDIR}/apkmod
 	chmod +x ${ALPINEDIR}/usr/bin/aapt
@@ -170,11 +176,9 @@ do_patches() {
 }
 
 jadx() {
-    JADXVER=1.1.0
-    JADXURL=https://github.com/skylot/jadx/releases/download/v${JADXVER}/jadx-$JADXVER.zip
-    wget $JADXURL
-    mkdir -p $ALPINEDIR/usr/lib/jadx
-    unzip jadx-$JADXVER.zip -d $ALPINEDIR/usr/lib/jadx
+    wget ${JADX_URL}
+    mkdir -p ${ALPINEDIR}/usr/lib/jadx
+    unzip jadx-${JADX_VERSION}.zip -d ${ALPINEDIR}/usr/lib/jadx
 }
 
 ##################
