@@ -15,6 +15,8 @@ APKTOOL_URL="https://github.com/Hax4us/Apkmod/releases/download/v${APKTOOL_VERSI
 JADX_VERSION="1.3.2"
 JADX_URL=https://github.com/skylot/jadx/releases/download/v${JADX_VERSION}/jadx-${JADX_VERSION}.zip
 
+AAPT_URL="https://github.com/Hax4us/Apkmod/releases/download/v${APKTOOL_VERSION}/aapt_@ARCH@.tar.gz"
+
 
 detect_os() {
 	if [ -e $BINDIR/termux-info ]; then
@@ -60,9 +62,9 @@ install_deps() {
 		arm64-v8a)
 			ARCH=aarch64
 			;;
-		#armeabi|armeabi-v7a)
-		#	ARCH=arm
-		#	;;
+		armeabi|armeabi-v7a)
+			ARCH=arm
+			;;
 		#x86|i686)
 		#	ARCH=x86
 		#	;;
@@ -75,8 +77,7 @@ install_deps() {
 			;;
 	esac
 
-	aapturl=https://github.com/Hax4us/Hax4us.github.io/blob/master/files/aapt/$ARCH/aapt.tar.gz?raw=true
-	wget ${aapturl} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
+	wget ${AAPT_URL/@ARCH@/${ARCH}} -O aapt.tar.gz && tar -xf aapt.tar.gz -C ${LIBDIR} && rm aapt.tar.gz
 	
     for i in aapt aapt2; do
 		mv ${LIBDIR}/android/${i} ${ALPINEDIR}/usr/bin
