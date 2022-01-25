@@ -4,7 +4,7 @@
 ## _Steps For Installation_
 1. First goto home directory `cd $HOME`
 2. Get the setup script `wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh`
-3. Execute the script `sh setup.sh`
+3. Execute the script `bash setup.sh`
 4. Now you can execute command `apkmod`
 
 ## Usage :
