@@ -252,7 +252,7 @@ update() {
 		else
 			ARGS=--without-alpine
 		fi
-		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && sh setup.sh $ARGS
+		wget https://raw.githubusercontent.com/Hax4us/Apkmod/master/setup.sh && bash setup.sh $ARGS
 	fi
 }
 
