@@ -18,4 +18,5 @@ A clear and concise description of what you expected to happen.
 **Additional information**
 1. Post output of command `termux-info`
 2. Post version `apkmod -v`
-3. Attach Original __Apk__ file.
+3. Adjunte el archivo __Apk__ original.
+4. __Apk__ original.
